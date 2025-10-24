@@ -3,6 +3,9 @@
 # Reviewed by: (Insert Name)
 from backend.app.schemas.productClass import Product
 import pytest
+import os
+import sys
+from fastapi import FastAPI
 
 
 # Test if products are created.
