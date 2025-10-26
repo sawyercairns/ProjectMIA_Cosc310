@@ -10,7 +10,7 @@ class Product:
         self.product_id = product_id
         self.product_name = product_name
         self.product_desc = product_desc
-        self.price = price
+        self._price = price
         self._discount_price = discount_price
         self._discount_percent = discount_percent
         self._rating = rating
@@ -22,14 +22,14 @@ class Product:
         if percent < 0 or percent > 100:
             raise ValueError("Discount percent must be within 0 and 100.")
         self._discount_percent = percent
-        self._discount = self.price * (percent / 100)
+        self._discount = self._price * (percent / 100)
         print("Discount has been set successfully.")
 
     # Set the price to a new price. Price should be float greater than 0.
     def change_price(self, price):
         if price < 0:
             raise ValueError("Price cannot be a negative number.")
-        self.price = price
+        self._price = price
         print("New price set successfully.")
 
 
