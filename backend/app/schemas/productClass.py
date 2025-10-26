@@ -4,16 +4,18 @@
 
 
 class Product:
-    def __init__(self, product_id, product_name, product_desc, price):
+
+    def __init__(self, product_id, product_name, product_desc, price, discount_price=0.0,
+                  discount_percent=0.0, rating=0, rating_count=0, units_sold=0):
         self.product_id = product_id
         self.product_name = product_name
         self.product_desc = product_desc
-        self._price = price
-        self._discount = 0.0 # assuming default discount is 0
-        self._discount_percent = 0.0 # assuming defualt discount is 0
-        self._rating = 0 # to change upon rating creation
-        self._rating_count = 0 # to change upon rating creation
-        self._units_sold = 0 # to change upon rating creation
+        self.price = price
+        self._discount_price = discount_price
+        self._discount_percent = discount_percent
+        self._rating = rating
+        self._rating_count = rating_count
+        self._units_sold = units_sold
 
     # Set the discount price of the product. Percent should be int and within 0-100.
     def set_discount(self, percent):
