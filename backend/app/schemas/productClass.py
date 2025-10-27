@@ -2,12 +2,22 @@
 # Created by: Ethan Wilson
 # Reviewed by: Sawyer
 
+import decimal
 
 class Product:
+<<<<<<< Updated upstream
     def __init__(self, product_id, product_name, product_desc, price):
         self.product_id = product_id
         self.product_name = product_name
         self.product_desc = product_desc
+=======
+
+    def __init__(self, product_id: int, product_name: str, product_desc: str, price: decimal, discount_price: decimal,
+                  discount_percent: int, rating: decimal, rating_count: int, units_sold: int):
+        self._product_id = product_id
+        self._product_name = product_name
+        self._product_desc = product_desc
+>>>>>>> Stashed changes
         self._price = price
         self._discount = 0.0 # assuming default discount is 0
         self._discount_percent = 0.0 # assuming defualt discount is 0
@@ -30,4 +40,76 @@ class Product:
         self._price = price
         print("New price set successfully.")
 
+    #Setters/Getters for all attributes of the class.
+    @property
+    def product_id(self):
+        return self._product_id
+    
+    @product_id.setter
+    def product_id(self, id:int):
+        self._product_id = id
+
+    @property
+    def product_name(self):
+        return self._product_name
+    
+    @product_name.setter
+    def product_name(self, id:str):
+        self._product_name = id
+
+    @property
+    def product_desc(self):
+        return self._product_desc
+
+    @product_desc.setter
+    def product_desc(self, id:str):
+        self._product_desc = id
+
+    @property
+    def price(self):
+        return self._price
+
+    @price.setter
+    def price(self, id:decimal):
+        self._price = id            
+
+    @property
+    def discount_price(self):
+        return self._discount_price
+
+    @discount_price.setter
+    def discount_price(self, id:decimal):
+        self._discount_price
+
+    @property
+    def discount_percent(self):
+        return self._discount_percent
+    
+    @discount_percent.setter
+    def discount_percent(self, id:int):
+        self._discount_percent = id
+
+    @property
+    def rating(self):
+        return self._rating
+    
+    @rating.setter
+    def rating(self, id:decimal):
+        self._rating = id
+
+    @property
+    def rating_count(self):
+        return self._rating_count
+    
+    @rating_count.setter
+    def rating_count(self, id:int):
+        self._rating_count = id
+
+    @property
+    def units_sold(self):
+        return self.units_sold
+    
+    @units_sold.setter
+    def units_sold(self, id:int):
+        self._units_sold = id
 
