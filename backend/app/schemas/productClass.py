@@ -5,19 +5,12 @@
 import decimal
 
 class Product:
-<<<<<<< Updated upstream
-    def __init__(self, product_id, product_name, product_desc, price):
-        self.product_id = product_id
-        self.product_name = product_name
-        self.product_desc = product_desc
-=======
 
     def __init__(self, product_id: int, product_name: str, product_desc: str, price: decimal, discount_price: decimal,
                   discount_percent: int, rating: decimal, rating_count: int, units_sold: int):
         self._product_id = product_id
         self._product_name = product_name
         self._product_desc = product_desc
->>>>>>> Stashed changes
         self._price = price
         self._discount = 0.0 # assuming default discount is 0
         self._discount_percent = 0.0 # assuming defualt discount is 0
