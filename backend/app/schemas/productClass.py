@@ -6,8 +6,8 @@ import decimal
 
 class Product:
 
-    def __init__(self, product_id: int, product_name: str, product_desc: str, price: decimal, discount_price: decimal,
-                  discount_percent: int, rating: decimal, rating_count: int, units_sold: int):
+    def __init__(self, product_id: int, product_name: str, product_desc: str, price: decimal, discount_price: decimal = 0 ,
+                  discount_percent:decimal = 0.0, rating: decimal = 0.0, rating_count: int = 0, units_sold: int = 0):
         self._product_id = product_id
         self._product_name = product_name
         self._product_desc = product_desc
