@@ -3,7 +3,7 @@
 # Created by: Ashton Raber
 # Reviewed by: 
 
-from backend.app.schemas.userClass import User, InteractUser
+from backend.app.schemas.userClass import User
 import pytest
 
 # Test if a user can be created
@@ -14,10 +14,10 @@ def test_User():
                   "Raber", 
                   23, 
                   "email@gmail.com")
-    assert result.userId == 10
-    assert result.userPassword == "test"
-    assert result.firstName == "Ashton"
-    assert result.lastName == "Raber"
+    assert result.user_id == 10
+    assert result.user_password == "test"
+    assert result.first_name == "Ashton"
+    assert result.last_name == "Raber"
     assert result.age == 23
     assert result.email == "email@gmail.com"
 
@@ -43,7 +43,7 @@ def test_user_id_int():
              "email@gmail.com")
 
 # Test to make sure User can not have a age less than 1
-def test_age_invalid():
+def test_age_invalid_1():
     with pytest.raises(ValueError):
         User(10, 
              "test", 
@@ -53,78 +53,97 @@ def test_age_invalid():
              "email@gmail.com")
 
 
-# Test getUserId
-def test_get_user_id():
-    interactU = InteractUser(User(10, 
-                                  "test", 
-                                  "Ashton", 
-                                  "Raber", 
-                                  23, 
-                                  "email@gmail.com"))
-    assert interactU.get_user_id() == 10
+# Testing user_id
+def test_user_id():
+    user = User(10, 
+                "test", 
+                "Ashton", 
+                "Raber", 
+                23, 
+                "email@gmail.com")
+    assert user.user_id == 10
+    # Setter 
+    user.user_id = 12
+    assert user.user_id == 12
 
-# Test getFirstName
-def test_get_first_name():
-    interactU = InteractUser(User(10, 
-                                  "test", 
-                                  "Ashton", 
-                                  "Raber", 
-                                  23, 
-                                  "email@gmail.com"))
-    assert interactU.get_first_name() == "Ashton"
 
-# Test getLastName
-def test_get_last_name():
-    interactU = InteractUser(User(10, 
-                                  "test", 
-                                  "Ashton", 
-                                  "Raber", 
-                                  23, 
-                                  "email@gmail.com"))
-    assert interactU.get_last_name() == "Raber"
 
-# Test setting a new password
-def test_set_password():
-    interactU = InteractUser(User(10, 
-                                  "test", 
-                                  "Ashton", 
-                                  "Raber", 
-                                  23, 
-                                  "email@gmail.com"))
-    assert interactU.get_password() == "test"
-    interactU.set_password("test2")
-    assert interactU.get_password() == "test2"
+# Testing first_name
+def test_first_name():
+    user = User(10, 
+                "test", 
+                "Ashton", 
+                "Raber", 
+                23, 
+                "email@gmail.com")
+    assert user.first_name == "Ashton"
+    # Setter
+    user.first_name = "Dan"
+    assert user.first_name == "Dan"
 
-# Test setAge
-def test_set_age():
-    interactU = InteractUser(User(10, 
-                                  "test", 
-                                  "Ashton", 
-                                  "Raber", 
-                                  23, 
-                                  "email@gmail.com"))
-    assert interactU.get_age() == 23
-    interactU.set_age(24)
-    assert interactU.get_age() == 24
 
-# Test setAge for a invalid age
-def test_set_age_invalid():
-    interactU = InteractUser(User(10, 
-                                  "test", 
-                                  "Ashton", 
-                                  "Raber", 
-                                  23, 
-                                  "email@gmail.com"))
+# Test last_name
+def test_last_name():
+    user = User(10, 
+                "test", 
+                "Ashton", 
+                "Raber", 
+                23, 
+                "email@gmail.com")
+    assert user.last_name == "Raber"
+    # Setter
+    user.last_name = "Bassi"
+    assert user.last_name == "Bassi"
+
+# Test user_password
+def test_user_password():
+    user = User(10, 
+                "test", 
+                "Ashton", 
+                "Raber", 
+                23, 
+                "email@gmail.com")
+    assert user.user_password == "test"
+    # Setter
+    user.user_password = "test2"
+    assert user.user_password == "test2"
+
+# Test age
+def test_age():
+    user = User(10, 
+                "test", 
+                "Ashton", 
+                "Raber", 
+                23, 
+                "email@gmail.com")
+    assert user.age == 23
+    # Setter
+    user.age = 24
+    assert user.age== 24
+
+# Test email
+def test_email():
+    user = User(10, 
+                "test", 
+                "Ashton", 
+                "Raber", 
+                23, 
+                "email@gmail.com")
+    assert user.email == "email@gmail.com"
+    # Setter
+    user.email = "emailTwo@gmail.com"
+    assert user.email == "emailTwo@gmail.com"
+    # Invalid Email
     with pytest.raises(ValueError):
-        interactU.set_age(-2)
+        user.email = "emailgmail.com"
 
-# Test removing an account
-def test_remove_account():
-    interactU = InteractUser(User(10, 
-                                  "test", 
-                                  "Ashton", 
-                                  "Raber", 
-                                  23, 
-                                  "email@gmail.com"))
-    interactU.remove_user_account()
-    assert interactU.user is None
+# Test age for a invalid age
+def test_age_invalid_2():
+    user = User(10, 
+                "test", 
+                "Ashton", 
+                "Raber", 
+                23, 
+                "email@gmail.com")
+    with pytest.raises(ValueError):
+        user.age = -2

@@ -6,81 +6,108 @@
 class User:
     """
     User class just to store data and check if it is valid.
+    The getters and setters are also in here with some utility functions
     """
     def __init__(self, 
-                 userId, 
-                 userPassword,
-                firstName, 
-                lastName, 
+                 user_id, 
+                 user_password,
+                first_name, 
+                last_name, 
                 age, 
                 email):
-        if not isinstance(userId, int):
+        if not isinstance(user_id, int):
             raise TypeError("userId must be an integer")
         if not isinstance(age, int):
             raise TypeError("age must be an integer")
         if age <= 0:
             raise ValueError("age must be greater than 0")
 
-        self.userId = userId
-        self.userPassword = userPassword
-        self.firstName = firstName
-        self.lastName = lastName
-        self.age = age
-        self.email = email
+        self._user_id = user_id
+        self._user_password = user_password
+        self._first_name = first_name
+        self._last_name = last_name
+        self._age = age
+        self._email = email
 
+    # -- user_id --
+    @property
+    def user_id(self):
+        return self._user_id
+    
+    @user_id.setter
+    def user_id(self, id: int):
+        if not isinstance(id, int):
+            raise TypeError("user_id must be an integer")
+        self._user_id = id
+
+    # -- first_name --
+    @property
+    def first_name(self):
+        return self._first_name
+    
+    @first_name.setter
+    def first_name(self, new_name: str):
+        if not isinstance(new_name, str):
+            raise TypeError("first_name must be a string")
+        self._first_name = new_name
+    
+    # -- last_name --
+    @property
+    def last_name(self):
+        return self._last_name
+    
+    @last_name.setter
+    def last_name(self, new_name: str):
+        if not isinstance(new_name, str):
+            raise TypeError("last_name must be a string")
+        self._last_name = new_name
+
+
+    # -- age --
+    @property
+    def age(self):
+        return self._age
+    
+    @age.setter
+    def age(self, new_age: int):
+        if not isinstance(new_age, int):
+            raise TypeError("Age must be an integer")
+        if new_age <= 0:
+            raise ValueError("age must be greater than 0")
+        self._age = new_age
+    
+    # -- user_password --
+    @property
+    def user_password(self):
+        return self._user_password
+
+    @user_password.setter
+    def user_password(self, new_password):
+        if not isinstance(new_password, str):
+            raise TypeError("Password must be a string")
+        self._user_password = new_password
+
+    # -- email --
+    @property
+    def email(self):
+        return self._email
+
+    @email.setter
+    def email(self, new_email: str):
+        if not isinstance(new_email, str):
+            raise TypeError("email must be a string")
+        if "@" not in new_email:
+            raise ValueError("email must contain '@'")
+        self._email = new_email
+
+    # -- utility
+    """
+    def remove_user_account(self):
+    Need to create the JSON file to delete the user from plus the interactor for it
+    """
+   
 
 class InteractUser:
     """
-    interactUser class used to get and set variables of a user.
-    Also can remove a user account.
-    """
-    def __init__(self, user: User):
-        self.user = user
-
-
-    def get_user_id(self):
-        return self.user.userId
-
-    def get_first_name(self):
-        return self.user.firstName
-    
-    def get_last_name(self):
-        return self.user.lastName
-    
-    def get_age(self):
-        return self.user.age
-    
-    def get_password(self):
-        return self.user.userPassword
-
-    def set_password(self, newPassword):
-        if not isinstance(newPassword, str):
-            raise TypeError("Password must be a string")
-        self.user.userPassword = newPassword
-
-    def set_age(self, newAge):
-        if not isinstance(newAge, int):
-            raise TypeError("Age must be an integer")
-        if newAge <= 0:
-            raise ValueError("age must be greater than 0")
-        self.user.age = newAge
-
-    def remove_user_account(self):
-        if self.user is None:
-            # Checks if the user is already deleted
-            return
-        # Would need to remove the user from the json file
-        self.user = None
-
-    """ Need to make a user json file 
-    def get_user(self, userId) -> User:
-        Look through the user json file
-
-        raise ValueError(f"User with ID {userId} not found")
-    
-    """
-
-    """
-    Note: I would assume we would also have a userBrowse function since users can browse products?
-    def user_browse():
+    InteractUser class used for parsing user from the JSON file 
     """
