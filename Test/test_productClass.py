@@ -59,7 +59,7 @@ def test_product_class_setters_and_getters():
     product.discount_price = 90.00
     product.rating = 4
     product.rating_count = 2
-    product.units_sold = 2
+    product.units_sold = 3
 
 
     assert product.product_id == 10
@@ -70,4 +70,4 @@ def test_product_class_setters_and_getters():
     assert product.discount_price == 90.00
     assert product.rating == 4
     assert product.rating_count == 2
-    assert product.units_sold == 2
+    assert product.units_sold == 3
