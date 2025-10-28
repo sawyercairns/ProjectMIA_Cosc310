@@ -15,11 +15,11 @@ def test_product_creation():
     assert product.product_name == "Basket Ball"
 
 # Test if discounts can be set.
-def test_set_discount():
+def test_set_discount_price():
     product = Product(2, "Hockey Stick", "Hockey Stick for Adults", 95.00)
     product.set_discount(10)
     assert product._discount_percent == 10
-    assert product._discount == product._price * (10/100)
+    assert product._discount_price == product._price * (10/100)
 
 # Test if the price can be changed.
 def test_change_price():
@@ -41,24 +41,24 @@ def test_invalid_pric_change():
 
 #Test the getters and setters for product class
 def test_product_class_setters_and_getters():
-    product = Product(7, "Bats", "Steel Bat,", 150.00, 0, 0, 5, 1, 1)
+    product = Product(7, "Bats", "Steel Bat,", 150.00, 0.0, 0, 5, 1, 1)
 
     product.product_id = 10
     product.product_name = "Bat"
     product.product_desc = "Wooden Bat"
     product.price = 100.00
     product.discount_percent = 10
-    product.discount_price = product.price * (product.discount_percent/100)
+    product.discount_price = 90.00
     product.rating = 4
     product.rating_count = 2
     product.units_sold = 2
 
     assert product.product_id == 10
     assert product.product_name == "Bat"
-    assert product.product_desc == "Steel Bat"
+    assert product.product_desc == "Wooden Bat"
     assert product.price == 100.00
     assert product.discount_percent == 10
-    assert product.discount_price == product.price * (product.discount_percent/100)
+    assert product.discount_price == 90.00
     assert product.rating == 4
     assert product.rating_count == 2
     assert product.units_sold == 2

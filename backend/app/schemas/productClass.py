@@ -6,24 +6,32 @@ import decimal
 
 class Product:
 
-    def __init__(self, product_id: int, product_name: str, product_desc: str, price: decimal, discount_price: decimal = 0 ,
-                  discount_percent:decimal = 0.0, rating: decimal = 0.0, rating_count: int = 0, units_sold: int = 0):
+    def __init__(self,
+                product_id: int,
+                product_name: str,
+                product_desc: str,
+                price: decimal,
+                discount_price: decimal = 0,
+                discount_percent:decimal = 0.0,
+                rating: decimal = 0.0,
+                rating_count: int = 0,
+                units_sold: int = 0):
         self._product_id = product_id
         self._product_name = product_name
         self._product_desc = product_desc
         self._price = price
-        self._discount = 0.0 # assuming default discount is 0
-        self._discount_percent = 0.0 # assuming defualt discount is 0
-        self._rating = 0 # to change upon rating creation
-        self._rating_count = 0 # to change upon rating creation
-        self._units_sold = 0 # to change upon rating creation
+        self._discount_price = discount_price
+        self._discount_percent = discount_percent
+        self._rating = rating
+        self._rating_count = rating_count
+        self._units_sold = units_sold
 
     # Set the discount price of the product. Percent should be int and within 0-100.
     def set_discount(self, percent):
         if percent < 0 or percent > 100:
             raise ValueError("Discount percent must be within 0 and 100.")
         self._discount_percent = percent
-        self._discount = self._price * (percent / 100)
+        self._discount_price = self._price * (percent / 100)
         print("Discount has been set successfully.")
 
     # Set the price to a new price. Price should be float greater than 0.
@@ -72,7 +80,7 @@ class Product:
 
     @discount_price.setter
     def discount_price(self, id:decimal):
-        self._discount_price
+        self._discount_price = id
 
     @property
     def discount_percent(self):
@@ -100,7 +108,7 @@ class Product:
 
     @property
     def units_sold(self):
-        return self.units_sold
+        return self._units_sold
     
     @units_sold.setter
     def units_sold(self, id:int):
