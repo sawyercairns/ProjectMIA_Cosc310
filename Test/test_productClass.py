@@ -6,6 +6,7 @@ import pytest
 import os
 import sys
 from fastapi import FastAPI
+#test
 
 
 # Test if products are created.
