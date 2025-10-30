@@ -20,14 +20,14 @@ class Product:
                 rating_count: int = 0,
                 units_sold: int = 0):
         self._product_id = product_id
-        self._product_name = product_name
-        self._product_desc = product_desc
-        self._price = price
-        self._discount_price = discount_price
-        self._discount_percent = discount_percent
-        self._rating = rating
-        self._rating_count = rating_count
-        self._units_sold = units_sold
+        self.product_name = product_name
+        self.product_desc = product_desc
+        self.price = price
+        self.discount_price = discount_price
+        self.discount_percent = discount_percent
+        self.rating = rating
+        self.rating_count = rating_count
+        self.units_sold = units_sold
 
 
     # Set the discount price of the product. Percent should be int and within 0-100.
@@ -51,11 +51,6 @@ class Product:
     @property
     def product_id(self):
         return self._product_id
-   
-    @product_id.setter
-    def product_id(self, id:int):
-        self._product_id = id
-
 
     @property
     def product_name(self):
