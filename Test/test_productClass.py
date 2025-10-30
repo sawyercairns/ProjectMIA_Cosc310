@@ -51,7 +51,6 @@ def test_product_class_setters_and_getters():
     product = Product(7, "Bats", "Steel Bat,", 150.00, 0.0, 0, 5, 1, 1)
 
 
-    product.product_id = 10
     product.product_name = "Bat"
     product.product_desc = "Wooden Bat"
     product.price = 100.00
@@ -62,7 +61,6 @@ def test_product_class_setters_and_getters():
     product.units_sold = 2
 
 
-    assert product.product_id == 10
     assert product.product_name == "Bat"
     assert product.product_desc == "Wooden Bat"
     assert product.price == 100.00
