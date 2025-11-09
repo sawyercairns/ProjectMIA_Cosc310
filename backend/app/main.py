@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers.items import router as items_router
+from backend.app.routers.productRouter import router as products_router
 
 app = FastAPI()
 
@@ -7,4 +7,5 @@ app = FastAPI()
 def health():
     return {"status": "ok"}
 
-app.include_router(items_router)
+
+app.include_router(products_router)
