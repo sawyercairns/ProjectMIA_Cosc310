@@ -1,6 +1,4 @@
 import json
-
-
 # Takes user email, password, and the users.json to check if they exist
 # Returns either true or false
 def validate_user(uEmail, uPassword, fPath='users.json'):
