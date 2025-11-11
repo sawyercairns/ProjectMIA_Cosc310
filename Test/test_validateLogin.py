@@ -4,8 +4,8 @@
 
 import pytest
 import json
-from backend.app.schemas.userClass import User
 from backend.app.schemas.validateLogin import validate_user
+from fastapi import FastAPI
 
 users_path = "../backend/app/data/users.json"
 
