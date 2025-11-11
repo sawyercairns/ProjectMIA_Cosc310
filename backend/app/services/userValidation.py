@@ -12,7 +12,6 @@ def validate_user(uEmail, uPassword, fPath='users.json'):
             if user.get("email") == uEmail and user.get("user_password") == uPassword:
                 return True
 
-
         return False
    
     except FileNotFoundError:
