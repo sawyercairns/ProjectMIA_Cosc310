@@ -31,11 +31,11 @@ class AddItemRequest(BaseModel):
 @router.post("/add-item", response_model=dict)
 def add_item_endpoint(request: AddItemRequest):
     order_item = OrderItem(
-        product_id=request.product_id,
-        product_name=request.product_name,
-        product_desc=request.product_desc,
-        quantity=request.quantity,
-        price=request.price
+        product_id = request.product_id,
+        product_name = request.product_name,
+        product_desc = request.product_desc,
+        quantity = request.quantity,
+        price = request.price
     )
     add_item(request.user_id, order_item)
     cart = load_cart(request.user_id)
