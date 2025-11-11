@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectMIA Online Shop</title>
+</head>
+<body>
+    <h1>ProjectMIA Online Shop</h1>
+    
+    <a href="/">🏠 Home</a>
+    
+    <form method="get" action="/">
+        <label for="search">Search products:</label>
+        <input type="text" id="search" name="search" value="{{ search_query }}" placeholder="Enter product name...">
+        <button type="submit">Search</button>
+    </form>
+    
+    <p>Showing {{ displayed_count }} out of {{ total_matches }} products (Page {{ current_page }} of {{ total_pages }})</p>
+    
+    <div>
+        {% if has_previous %}
+        <a href="/?search={{ search_query }}&page={{ current_page - 1 }}">← Previous</a>
+        {% else %}
+        <span>← Previous</span>
+        {% endif %}
+        
+        {% if has_next %}
+        <a href="/?search={{ search_query }}&page={{ current_page + 1 }}">Next →</a>
+        {% else %}
+        <span>Next →</span>
+        {% endif %}
+    </div>
+    
+    <ul>
+        {% for product in products %}
+        <li>
+            <strong>{{ product.product_name }}</strong><br>
+            {{ product.product_desc }}<br>
+            Price: ${{ "%.2f"|format(product.price) }}<br>
+            Rating: {{ "%.1f"|format(product.rating) }} ({{ product.rating_count }} reviews)<br>
+            Units sold: {{ product.units_sold }}
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+    
+    <div>
+        {% if has_previous %}
+        <a href="/?search={{ search_query }}&page={{ current_page - 1 }}">← Previous</a>
+        {% else %}
+        <span>← Previous</span>
+        {% endif %}
+        
+        {% if has_next %}
+        <a href="/?search={{ search_query }}&page={{ current_page + 1 }}">Next →</a>
+        {% else %}
+        <span>Next →</span>
+        {% endif %}
+    </div>
+</body>
+</html>
