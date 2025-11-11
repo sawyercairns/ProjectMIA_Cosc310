@@ -35,7 +35,7 @@ def remove_product(id:int):
     with path.open("r", encoding="UTF-8") as f:
         products = json.load(f)
         for p in products:
-            if p["product_id"] == id:
+            if p["product_id"] == str(id):
                 products.remove(p)
         f.close()
     with tmp_path.open("w", encoding="UTF-8") as t:
