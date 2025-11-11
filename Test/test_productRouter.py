@@ -5,9 +5,6 @@ import json
 
 client = TestClient(app)
 
-#TODO: For now, this just makes sure that requests can be made, with filters.
-# Update tests to ensure these categories and filters return as expected as these methods are implemented
-
 def test_get_products():
     r = client.get("/products?category=test&keyword=test2&maxPrice=100")
     assert r.status_code == 200
@@ -23,4 +20,4 @@ def test_get_products():
     assert r.status_code == 200
     response = r.json()
     for item in response:
-        assert "USB" in item["_product_name"]
+        assert "usb" in item["_product_name"].lower()
