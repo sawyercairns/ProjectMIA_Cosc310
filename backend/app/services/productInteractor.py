@@ -47,7 +47,7 @@ def get_products_filtered(category:str = "", keywords:str = "", max_price:float 
     products = _get_all_products()
     productList = list()
     for product in products:
-        if product["price"] <= max_price and keywords in product["product_name"] and ("category" not in product or product["category"] == category):
+        if product["price"] <= max_price and keywords.lower() in product["product_name"].lower() and ("category" not in product or product["category"] == category):
             new_product = Product(product["product_id"], product["product_name"], product["product_desc"], product["price"], product["discount_price"], product["discount_percent"], product["rating"], product["rating_count"], product["units_sold"])
             productList.append(new_product)
     return productList

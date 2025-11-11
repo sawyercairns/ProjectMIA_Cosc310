@@ -17,7 +17,7 @@ def test_get_products_filtered_many():
     products = get_products_filtered("","USB", 1000000)
     assert len(products) != 0
     for product in products:
-        assert "USB" in product.product_name
+        assert "usb" in product.product_name.lower()
 
     products = get_products_filtered("","", 10)
     for product in products:
