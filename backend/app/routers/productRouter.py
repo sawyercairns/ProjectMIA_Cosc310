@@ -17,4 +17,11 @@ def create_product(username:str, password:str, product_name:str, description:str
         productInteractor.create_product(Product(0, product_name, description, price))
         return "PRODUCT CREATED"
     else: return "CREATION FAILED"
+
+@router.delete("", response_model=None, status_code=204)
+def delete_product(username:str, password: str, id:int):
+    if user_is_admin(username, password):
+        productInteractor.remove_product(id)
+        return "PRODUCT REMOVED"
+    else: return "REMOVAL FAILED"
     
