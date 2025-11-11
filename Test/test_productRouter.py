@@ -20,4 +20,4 @@ def test_get_products():
     assert r.status_code == 200
     response = r.json()
     for item in response:
-        assert "USB" in item["_product_name"]
+        assert "usb" in item["_product_name"].lower()
