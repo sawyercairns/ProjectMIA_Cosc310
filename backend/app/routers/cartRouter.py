@@ -9,9 +9,6 @@ router = APIRouter(prefix="/cart", tags=["Cart"])
 
 @router.get("", response_model=dict)
 def get_user_cart(user_id: str):
-    
-    if not user_id:
-        raise HTTPException(status_code=400, detail="user_id is required")
 
     try:
         cart = load_cart(user_id)
@@ -28,7 +25,7 @@ class AddItemRequest(BaseModel):
     quantity: int
 
 
-@router.post("/add-item", response_model=dict)
+@router.post("/cart/items", response_model=dict)
 def add_item_endpoint(request: AddItemRequest):
     order_item = OrderItem(
         product_id = request.product_id,
