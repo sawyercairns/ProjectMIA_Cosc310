@@ -20,12 +20,13 @@ def load_cart(user_id: str) -> Cart:
     with open(path, "r") as f:
         data = json.load(f)
 
-    if user_id not in data:
+    user_cart = data.get(user_id)
+
+    if not user_cart:
         empty_cart = Cart(user_id, cart_items=[], cart_value=decimal.Decimal(0))
         _save_cart(empty_cart)
         return empty_cart
 
-    user_cart = data[user_id]
     items = [
         OrderItem(
             product_id = item["product_id"],
@@ -34,7 +35,7 @@ def load_cart(user_id: str) -> Cart:
             quantity = item["quantity"],
             price = decimal.Decimal(item["price"])
         )
-        for item in user_cart["cart_items"]
+        for item in user_cart.get("cart_items", [])
     ]
 
     return Cart(
@@ -47,11 +48,19 @@ def load_cart(user_id: str) -> Cart:
 def _save_cart(cart: Cart):
     if os.path.exists(path):
         with open(path, "r") as f:
-            data = json.load(f)
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = {}
     else:
         data = {}
 
-    data[cart._user_id] = cart.to_dict()
+    user_id = str(cart._user_id)
+    existing_cart = data.get(user_id, {})
+
+    new_cart_data = cart.to_dict()
+    existing_cart.update(new_cart_data)
+    data[user_id] = existing_cart
 
     with open(path, "w") as f:
         json.dump(data, f, indent=4)
