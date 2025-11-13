@@ -9,9 +9,9 @@ client = TestClient(app)
 def test_validation_router(mocker):
     mock_validation = mocker.patch("backend.app.routers.userSignInRouter.get_user")
     mock_validation.return_value = User(0,"password","email@email.com")
-    r = client.get("/loginManav?password=test")
+    r = client.get("/login?email=Manav&password=test")
     assert r.text == "\"VALID USER\""
 
     mock_validation.return_value = None
-    r = client.get("/loginJimmy?password=NotAPassword")
+    r = client.get("/login?email=Jimmy&password=NotAPassword")
     assert r.text == "\"INVALID USERNAME OR PASSWORD\""

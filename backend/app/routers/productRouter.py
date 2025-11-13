@@ -15,7 +15,7 @@ def get_products(category: str = "", keyword:str = "", maxPrice: float = 1000000
 @router.post("", response_model=None, status_code=201)
 def create_product(email:str, password:str, product_name:str, description:str, price:float):
     user = get_user(email, password)
-    if user is not None and "is_admin" in user and user["is_admin"] == "True":
+    if user is not None and user.is_admin:
         productInteractor.create_product(Product(0, product_name, description, price))
         return "PRODUCT CREATED"
     else: return "CREATION FAILED"
@@ -23,7 +23,7 @@ def create_product(email:str, password:str, product_name:str, description:str, p
 @router.delete("", response_model=None, status_code=204)
 def delete_product(email:str, password: str, id:int):
     user = get_user(email, password)
-    if user is not None and "is_admin" in user and user["is_admin"] == "True":
+    if user is not None and user.is_admin:
         productInteractor.remove_product(id)
         return "PRODUCT REMOVED"
     else: return "REMOVAL FAILED"
