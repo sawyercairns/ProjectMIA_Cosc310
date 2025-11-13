@@ -49,8 +49,11 @@ def _save_wishList(wishList: WishList):
     user_id = str(wishList._user_id)
     data[user_id] = wishList.to_dict()
 
-    with open(path, "w") as f:
-        json.dump(data, f, indent = 4)
+    temp_path = Path(str(path) + ".tmp")
+    with open(temp_path, "w") as f:
+        json.dump(data, f, indent=4)
+
+    os.replace(temp_path, path)
 
 
 def add_entry(user_id: str, product_id: int):
