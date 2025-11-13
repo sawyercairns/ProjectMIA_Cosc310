@@ -14,7 +14,8 @@ class User:
                 email: str,
                 first_name: str = "",
                 last_name: str = "",
-                age: int = 1):
+                age: int = 1,
+                is_admin = False):
         
         self._user_id = user_id
         self.user_password = user_password
@@ -22,6 +23,7 @@ class User:
         self.first_name = first_name
         self.last_name = last_name
         self.age = age 
+        self._is_admin = is_admin
 
     # -- user_id --
     @property
@@ -76,6 +78,11 @@ class User:
         if "@" not in new_email:
             raise ValueError("email must contain '@'")
         self._email = new_email
+    
+    # -- admin status --
+    @property
+    def is_admin(self):
+        return self._is_admin
 
     # -- utility
     """
