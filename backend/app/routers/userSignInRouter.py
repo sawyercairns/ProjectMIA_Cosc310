@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.app.services.validateLogin import get_user
+from backend.app.services.userInteractor import get_user
 
 router = APIRouter(prefix="/login", tags=["login"])
 
