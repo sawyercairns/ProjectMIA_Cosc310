@@ -126,3 +126,25 @@ def test_age():
     assert user.age == 23
     user.age = 24
     assert user.age== 24
+
+def test_admin():
+    user = User(10, 
+                "test", 
+                "email@gmail.com",
+                "Ashton", 
+                "Raber", 
+                23)
+    assert user.is_admin == False
+    with pytest.raises(AttributeError):
+        user.is_admin = True
+
+    user = User(10, 
+                "test", 
+                "email@gmail.com",
+                "Ashton", 
+                "Raber", 
+                23,
+                True)
+    assert user.is_admin == True
+    with pytest.raises(AttributeError):
+        user.is_admin = False
