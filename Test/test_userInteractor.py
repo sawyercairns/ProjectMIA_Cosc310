@@ -4,18 +4,27 @@
 
 
 import json
-from backend.app.services.userInteractor import get_user
+from backend.app.schemas.userClass import User
+from backend.app.services.userInteractor import get_user, add_user, remove_user
 
-users_path = "backend/app/data/users.json"
 
 
 # Try to login with an invalid user.
 def test_fake_user():
-    assert get_user("validateLogin@gmail.com", "test", users_path) == None
+    assert get_user("validateLogin@gmail.com", "test") == None
 
 
 # Check existing user and try to login.
 def test_real_user():
-    user = get_user("test@test.com", "test", users_path)
+    user = get_user("test@test.com", "test")
     assert user is not None
-    assert user["email"] == "test@test.com"
+    assert user.email == "test@test.com"
+
+def test_add_and_remove():
+    user = User(0,"password","email@email.com")
+    add_user(user)
+    u = get_user("email@email.com", "password")
+    assert u is not None
+    remove_user(u.user_id)
+    u = get_user("email@email.com", "password")
+    assert u is None
