@@ -14,7 +14,13 @@ def get_user(uEmail, uPassword):
        
         for user in users:
             if user.get("email") == uEmail and user.get("user_password") == uPassword:
-                return User(int(user["user_id"]),user["user_password"], user["email"], user["first_name"], user["last_name"], int(user["age"]), bool(user["is_admin"] if "is_admin" in user else False))
+                return User(int(user["user_id"]),
+                            user["user_password"], 
+                            user["email"], 
+                            user["first_name"], 
+                            user["last_name"], 
+                            int(user["age"]), 
+                            bool(user["is_admin"] if "is_admin" in user else False))
 
 
         return None

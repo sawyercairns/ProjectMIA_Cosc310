@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from backend.app.services.userInteractor import get_user, remove_user
+from backend.app.schemas.userClass import User
+from backend.app.services.userInteractor import get_user, remove_user, add_user
 
 router = APIRouter(prefix="/login", tags=["login"])
 
@@ -21,3 +22,18 @@ def delete_user(user_id: str, email:str, password: str):
         return "USER REMOVED"
     else:
         return "REMOVAL FAILED"
+
+@router.post("")
+def new_user(email:str, password:str, first_name: str = "", last_name:str = "", age: int = 1):
+    add_user(User(0, password, email, first_name, last_name, age))
+    return "USER ADDED"
+
+@router.post("/admin")
+def new_admin(auth_email:str, auth_password:str, email:str, password:str, first_name: str = "", last_name:str = "", age: int = 1):
+    user = get_user(auth_email, auth_password)
+    u = User(0, password, email, first_name, last_name, age, True)
+    if user is not None and user.is_admin:
+        add_user(u)
+        return "ADMIN ADDED"
+    else:
+        return "ADD FAILED"
