@@ -72398,5 +72398,14 @@
     "first_name": "Saw a.",
     "last_name": "",
     "age": 1
+  },
+  {
+    "user_id": "9151",
+    "user_password": "password",
+    "email": "admin@admin.com",
+    "first_name": "John",
+    "last_name": "Johnson",
+    "age": 1,
+    "is_admin": "True"
   }
 ]

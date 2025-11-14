@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from pathlib import Path
 from backend.app.routers.productRouter import router as products_router
 from backend.app.routers.cartRouter import router as cart_router
-from backend.app.routers.userSignInRouter import router as validation_router
+from backend.app.routers.userRouter import router as validation_router
 from backend.app.routers.wishListRouter import router as wishList_router
 from backend.app.services.productInteractor import get_products_filtered
 
