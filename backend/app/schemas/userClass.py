@@ -15,7 +15,8 @@ class User:
                 first_name: str = "",
                 last_name: str = "",
                 age: int = 1,
-                is_admin = False):
+                is_admin = False,
+                image_url: str = ""):
         
         self._user_id = user_id
         self.user_password = user_password
@@ -24,6 +25,7 @@ class User:
         self.last_name = last_name
         self.age = age 
         self._is_admin = is_admin
+        self._image_url = image_url
 
     # -- user_id --
     @property
@@ -84,8 +86,11 @@ class User:
     def is_admin(self):
         return self._is_admin
 
-    # -- utility
-    """
-    def remove_user_account(self):
-    Need to create the JSON file to delete the user from plus the interactor for it
-    """
+    # -- users profile picture --
+    @property
+    def image_url(self):
+        return self._image_url
+    
+    @image_url.setter
+    def image_url(self, new_url):
+        self._image_url = new_url

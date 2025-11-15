@@ -60,5 +60,47 @@ def add_user(u:User):
         with tmp_path.open("w", encoding="UTF-8") as t:
             json.dump(users, t, ensure_ascii=False, indent=2)
         os.replace(tmp_path, path)
-        
-            
+
+
+path = Path(__file__).resolve().parents[1] / "data" / "users.json"
+
+def update_password(user_id: str, old_password: str, new_password: str):
+
+    if not os.path.exists(path):
+        raise FileNotFoundError("users.json file not found")
+
+    with open(path, "r", encoding="UTF-8") as f:
+        data = json.load(f)
+
+    user = next((u for u in data if u["user_id"] == user_id), None)
+    if user is None:
+        raise ValueError("User not found")
+
+    if user.get("user_password") != old_password:
+        raise ValueError("Existing password does not match")
+    
+    user["user_password"] = new_password
+
+    temp_path = Path(str(path) + ".tmp")
+    with open(temp_path, "w") as f:
+        json.dump(data, f, indent=2)
+    os.replace(temp_path, path)
+
+def update_image_url(user_id: str,image_url: str):
+
+    if not os.path.exists(path):
+        raise FileNotFoundError("users.json file not found")
+
+    with open(path, "r", encoding="UTF-8") as f:
+        data = json.load(f)
+
+    user = next((u for u in data if u["user_id"] == user_id), None)
+    if user is None:
+        raise ValueError("User not found")
+
+    user["image_url"] = image_url
+
+    temp_path = Path(str(path) + ".tmp")
+    with open(temp_path, "w") as f:
+        json.dump(data, f, indent=2)
+    os.replace(temp_path, path)
