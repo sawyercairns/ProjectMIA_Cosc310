@@ -25,4 +25,35 @@ class OrderItem:
             price = product.price
         )
 
+    # -- Properties --
+    @property
+    def product_id(self):
+        return self._product_id
 
+    @property
+    def product_name(self):
+        return self._product_name
+
+    @property
+    def product_desc(self):
+        return self._product_desc
+
+    @property
+    def quantity(self):
+        return self._quantity
+
+    @property
+    def price(self):
+        return self._price
+
+    def to_dict(self):
+        """
+        Convert OrderItem to dictionary for JSON serialization.
+        """
+        return {
+            "product_id": self.product_id,
+            "product_name": self.product_name,
+            "product_desc": self.product_desc,
+            "quantity": self.quantity,
+            "price": str(self.price)
+        }
