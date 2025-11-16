@@ -19,7 +19,7 @@ def test_add_remove_reviews():
     response = r.json()
     id = response[0]["review_id"]
     assert len(response) != 0
-    r = client.delete("/reviews" + id + "?email=admin@admin.com&password=password")
+    r = client.delete("/reviews" + str(id) + "?email=admin@admin.com&password=password")
     r = client.get("/reviews/9151")
     response = r.json()
     assert len(response) == 0
