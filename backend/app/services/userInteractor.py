@@ -2,7 +2,7 @@ import json
 import os
 from pathlib import Path
 from backend.app.schemas.userClass import User
-from backend.app.services.Interactor import create_item
+from backend.app.services.Interactor import create_item, load_json, write_to_json
 
 
 # Takes user email, password, and the users.json to check if they exist
@@ -55,4 +55,38 @@ def add_user(u:User):
         }
         create_item("users.json", "user_id", item)
         
-            
+file_name = "users.json"
+
+def update_password(user_id: str, old_password: str, new_password: str):
+
+    data = load_json(file_name)
+
+    if data == None:
+        raise FileNotFoundError("JSON file not found error")
+
+    user = next((u for u in data if u["user_id"] == user_id), None)
+    if user is None:
+        raise ValueError("User not found")
+
+    if user.get("user_password") != old_password:
+        raise ValueError("Existing password does not match")
+    
+    user["user_password"] = new_password
+
+    write_to_json(file_name, data)
+    
+
+def update_image_url(user_id: str,image_url: str):
+
+    data = load_json(file_name)
+    
+    if data == None:
+        raise FileNotFoundError("JSON file not found error")
+
+    user = next((u for u in data if u["user_id"] == user_id), None)
+    if user is None:
+        raise ValueError("User not found")
+
+    user["image_url"] = image_url
+
+    write_to_json(file_name, data)
