@@ -25,7 +25,7 @@ def make_payment_refund():
 
     return True
 '''
-
+                 
 def update_refund_status(userid:str, orderid: int):
     orders = get_orders(userid)
     for order in orders:
@@ -53,7 +53,7 @@ def process_return(userid:str, orderid:int):
         return False
     
     # We'd now use the make_payment_refund to refund the payment to the client
-    # Empty placeholder
+    # Empty placeholder for now for payment
 
     update_refund_status(userid, orderid)
     print("Order refunded successfully.")
