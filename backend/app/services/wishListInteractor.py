@@ -57,7 +57,14 @@ def _save_wishList(wishList: WishList):
 
 
 def add_entry(user_id: str, product_id: int):
+    MAX_WISHLIST_ENTRIES = 10
+
     wishList = load_wishList(user_id)
+    entries_count = len(wishList.entries)
+
+    if entries_count >= MAX_WISHLIST_ENTRIES:
+        raise ValueError("Too many entries in wishlist.")
+
     entry = WishListEntry(product_id = product_id, date_added = date.today())
     wishList.add_entry(entry)
     _save_wishList(wishList)
