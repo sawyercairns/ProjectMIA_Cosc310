@@ -16,9 +16,9 @@ def test_fake_user():
 
 # Check existing user and try to login.
 def test_real_user():
-    user = get_user("test@test.com", "test")
+    user = get_user("test1@test.com", "test")
     assert user is not None
-    assert user.email == "test@test.com"
+    assert user.email == "test1@test.com"
 
 def test_add_and_remove():
     user = User(0,"password","email@email.com")
