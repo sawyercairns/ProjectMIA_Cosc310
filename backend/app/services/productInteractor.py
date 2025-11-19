@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 
-from backend.app.services.Interactor import create_item
+from backend.app.services.Interactor import create_item, remove_item
 
 #Adds new_product to end of json file with id incremented
 def create_product(p: Product):
@@ -22,17 +22,7 @@ def create_product(p: Product):
     create_item("products.json", "product_id", item)
 
 def remove_product(id:int):
-    path = Path(__file__).resolve().parents[1] / "data" / "products.json"
-    tmp_path = path.with_suffix(".tmp")
-    with path.open("r", encoding="UTF-8") as f:
-        products = json.load(f)
-        for p in products:
-            if p["product_id"] == str(id):
-                products.remove(p)
-        f.close()
-    with tmp_path.open("w", encoding="UTF-8") as t:
-        json.dump(products, t, ensure_ascii=False, indent=2)
-    os.replace(tmp_path, path)
+    remove_item("products.json", "product_id", id)
 
 #Takes all filters, returns a List of Product which match those filters
 def get_products_filtered(category:str = "", keywords:str = "", max_price:float = 100000):
