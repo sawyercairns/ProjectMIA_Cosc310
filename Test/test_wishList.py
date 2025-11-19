@@ -94,3 +94,10 @@ def test_remove_entry_integration():
     wl = load_wishList("user21")
     assert len(wl.entries) == 1
     assert wl.entries[0].product_id == 102
+
+def test_add_entry_limit():
+    for i in range(10):
+        add_entry("user21", 100 + i)
+
+    with pytest.raises(ValueError, match="Too many entries in wishlist."):
+        add_entry("user21", 999)
