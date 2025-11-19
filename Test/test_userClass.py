@@ -148,3 +148,28 @@ def test_admin():
     assert user.is_admin == True
     with pytest.raises(AttributeError):
         user.is_admin = False
+
+# image url unit testing
+
+def test_image_url_empty():
+    user = User(10, 
+                "test", 
+                "email@gmail.com",
+                "Ashton", 
+                "Raber", 
+                23)
+    assert user.image_url == ""
+
+def test_image_url():
+    user = User(10, 
+                "test", 
+                "email@gmail.com",
+                "Ashton", 
+                "Raber", 
+                23,
+                False,
+                "http:thisimage.com")
+    assert user.image_url == "http:thisimage.com"
+    user.image_url = "http:thisimage2.com"
+    assert user.image_url == "http:thisimage2.com"
+

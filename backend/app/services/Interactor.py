@@ -27,3 +27,10 @@ def create_item(file_name:str, id_key:str, item: dict):
     item[id_key] = new_id
     data.append(item)
     write_to_json(file_name, data)
+
+def remove_item(file_name:str, id_key:str, id: int):
+    items = load_json(file_name)
+    for item in items:
+        if item[id_key] == str(id):
+                items.remove(item)
+    write_to_json(file_name, items)

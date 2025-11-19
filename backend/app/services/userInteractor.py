@@ -2,7 +2,7 @@ import json
 import os
 from pathlib import Path
 from backend.app.schemas.userClass import User
-from backend.app.services.Interactor import create_item
+from backend.app.services.Interactor import create_item, remove_item
 
 
 # Takes user email, password, and the users.json to check if they exist
@@ -31,17 +31,7 @@ def get_user(uEmail, uPassword):
         return None
 
 def remove_user(id):
-    path = Path(__file__).resolve().parents[1] / "data" / "users.json"
-    tmp_path = path.with_suffix(".tmp")
-    with path.open("r", encoding="UTF-8") as f:
-        users = json.load(f)
-        for u in users:
-            if u["user_id"] == str(id):
-                users.remove(u)
-        f.close()
-    with tmp_path.open("w", encoding="UTF-8") as t:
-        json.dump(users, t, ensure_ascii=False, indent=2)
-    os.replace(tmp_path, path)
+    remove_item("users.json", "user_id", id)
 
 def add_user(u:User):
     if get_user(u.email, u.user_password) is None:
