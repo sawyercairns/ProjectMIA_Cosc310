@@ -91,10 +91,11 @@ def parse_amazon_csv() -> tuple[list[Product], list[User], list[Review]]:
                 # create new users if they don't exist
                 if original_user_id not in user_id_map:
                     user_id_map[original_user_id] = next_user_id
+                    email_number = next_user_id - 100  
                     u = User(
                         user_id=next_user_id,
                         user_password="test",
-                        email="test@test.com",
+                        email=f"test{email_number}@test.com",
                         first_name=user_name
                     )
                     users.append(u)
