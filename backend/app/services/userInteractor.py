@@ -64,3 +64,19 @@ def update_password(user_id: str, old_password: str, new_password: str):
     user["user_password"] = new_password
 
     write_to_json(file_name, data)
+
+
+def update_image_url(user_id: str,image_url: str):
+
+    data = load_json(file_name)
+    
+    if data == None:
+        raise FileNotFoundError("JSON file not found error")
+
+    user = next((u for u in data if u["user_id"] == user_id), None)
+    if user is None:
+        raise ValueError("User not found")
+
+    user["image_url"] = image_url
+
+    write_to_json(file_name, data)
