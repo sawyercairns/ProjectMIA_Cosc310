@@ -3,14 +3,14 @@
 import json
 import os
 from pathlib import Path
+from backend.app.services.Interactor import load_json, write_to_json
 orders_path = Path(__file__).resolve().parents[1] / "data" / "pastOrders.json"
 
 def get_orders(user_id:str):
     if not os.path.exists(orders_path):
         return []
     
-    with open(orders_path, "r") as f:
-        data = json.load(f)
+    data = load_json(orders_path.name)
 
     return data.get(user_id, [])
 
@@ -25,5 +25,4 @@ def save_orders(user_id:str, orders:list):
         data={}
     data[user_id] = orders
 
-    with open(orders_path, "w") as f:
-        json.dump(data, f, indent=2)
+    write_to_json(orders_path.name, data)

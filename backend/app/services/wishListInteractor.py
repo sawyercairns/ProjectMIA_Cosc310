@@ -3,6 +3,7 @@ import os
 from backend.app.schemas.wishListClass import WishList, WishListEntry
 from pathlib import Path
 from datetime import date
+from backend.app.services.Interactor import load_json, write_to_json
 
 """
 This file is the functions that the user can interact with.
@@ -15,8 +16,7 @@ def load_wishList(user_id: str) -> WishList:
     if not os.path.exists(path):
         raise FileNotFoundError("wishlist.json file not found")
 
-    with open(path, "r") as f:
-        data = json.load(f)
+    data = load_json(path.name)
 
     user_wishList = data.get(user_id)
 
@@ -49,11 +49,7 @@ def _save_wishList(wishList: WishList):
     user_id = str(wishList._user_id)
     data[user_id] = wishList.to_dict()
 
-    temp_path = Path(str(path) + ".tmp")
-    with open(temp_path, "w") as f:
-        json.dump(data, f, indent=4)
-
-    os.replace(temp_path, path)
+    write_to_json(path.name, data)
 
 
 def add_entry(user_id: str, product_id: int):
