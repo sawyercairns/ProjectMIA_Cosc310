@@ -1,6 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Body
 from backend.app.schemas.userClass import User
-from backend.app.services.userInteractor import get_user, remove_user, add_user
+from backend.app.services.userInteractor import get_user, remove_user, add_user, update_password
 
 router = APIRouter(prefix="/login", tags=["login"])
 
@@ -37,3 +37,17 @@ def new_admin(auth_email:str, auth_password:str, email:str, password:str, first_
         return "ADMIN ADDED"
     else:
         return "ADD FAILED"
+    
+@router.put("/password")
+def update_user_password(user_id: str = Body(...),
+                        old_password: str = Body(...),
+                        new_password: str = Body(...)):
+    try:
+        update_password(user_id, old_password, new_password)
+        return {"message": "Password updated successfully"}
+
+    except ValueError as e:
+        raise HTTPException(status_code = 400, detail=str(e))
+
+    except FileNotFoundError as e:
+        raise HTTPException(status_code = 500, detail=str(e))
