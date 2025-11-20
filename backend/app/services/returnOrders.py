@@ -6,12 +6,14 @@ from backend.app.services.pastOrdersInteractor import save_orders, get_orders
 
 
 def check_if_order_exists(userid:str, orderid:int):
-    orders = get_orders(userid)
+    # Deprecated: use check_if_order_exists_in_orders instead
+    raise NotImplementedError("Use check_if_order_exists_in_orders with orders param")
+
+def check_if_order_exists_in_orders(orders, orderid:int):
     for order in orders:
         if order["order_id"] == orderid:
             return order
     return None
-
 def check_time_return_window(orderdate:str) -> bool:
     ordertime = datetime.fromisoformat(orderdate)
     return ((datetime.now() - ordertime) <= timedelta(days=30))
@@ -26,8 +28,7 @@ def make_payment_refund():
     return True
 '''
                  
-def update_refund_status(userid:str, orderid: int):
-    orders = get_orders(userid)
+def update_refund_status(userid:str, orders, orderid: int):
     for order in orders:
         if order["order_id"] == orderid:
             order["returned"] = True
@@ -39,7 +40,8 @@ def update_refund_status(userid:str, orderid: int):
 
 # Actually processing a return using the above methods
 def process_return(userid:str, orderid:int):
-    order = check_if_order_exists(userid, orderid)
+    orders = get_orders(userid)
+    order = check_if_order_exists_in_orders(orders, orderid)
     if not order:
         print("Order not found.")
         return False
@@ -55,7 +57,7 @@ def process_return(userid:str, orderid:int):
     # We'd now use the make_payment_refund to refund the payment to the client
     # Empty placeholder for now for payment
 
-    update_refund_status(userid, orderid)
+    update_refund_status(userid, orders, orderid)
     print("Order refunded successfully.")
     return True
 
