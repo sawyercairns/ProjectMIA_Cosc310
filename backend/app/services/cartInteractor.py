@@ -4,6 +4,7 @@ import decimal
 from backend.app.schemas.cartClass import Cart
 from backend.app.schemas.orderItemClass import OrderItem
 from pathlib import Path
+from backend.app.services.Interactor import load_json, write_to_json
 
 """
 This file is the functions that the user can interact with.
@@ -17,8 +18,7 @@ def load_cart(user_id: str) -> Cart:
     if not os.path.exists(path):
         raise FileNotFoundError("File can not be found")
     
-    with open(path, "r") as f:
-        data = json.load(f)
+    data = load_json(path.name)
 
     user_cart = data.get(user_id)
 
@@ -62,8 +62,7 @@ def _save_cart(cart: Cart):
     existing_cart.update(new_cart_data)
     data[user_id] = existing_cart
 
-    with open(path, "w") as f:
-        json.dump(data, f, indent=4)
+    write_to_json(path.name, data)
 
 
 def add_item(user_id: str, order_item: OrderItem):
