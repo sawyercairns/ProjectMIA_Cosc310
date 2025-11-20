@@ -2,6 +2,7 @@ import csv
 import json
 import os
 import re
+import random
 from pathlib import Path
 from datetime import datetime
 
@@ -57,6 +58,8 @@ def parse_amazon_csv() -> tuple[list[Product], list[User], list[Review]]:
             product_name = (row.get("product_name") or "").strip()
             if product_name and product_name not in product_name_map:
                 product_name_map[product_name] = next_product_id
+                product_rating = _num(row.get("rating"))
+                product_rating_count = int(_num(row.get("rating_count")))
                 p = Product(
                     product_id=next_product_id,
                     product_name=product_name,
@@ -64,6 +67,9 @@ def parse_amazon_csv() -> tuple[list[Product], list[User], list[Review]]:
                     price=_inr_to_cad(_num(row.get("actual_price"))),
                     discount_price=_inr_to_cad(_num(row.get("discounted_price"))),
                     discount_percent=_num(row.get("discount_percentage")),
+                    rating=product_rating,
+                    rating_count=product_rating_count,
+                    units_sold=random.randint(0, 10000),
                 )
                 products.append(p)
                 next_product_id += 1
@@ -109,7 +115,7 @@ def parse_amazon_csv() -> tuple[list[Product], list[User], list[Review]]:
                         product_id=product_name_map[product_name],
                         created_at=datetime.now().date(),
                         rating=product_rating, 
-                        likes=0,
+                        likes=random.randint(0, 250),
                         title=review_title,
                         body=review_content,
                     )
