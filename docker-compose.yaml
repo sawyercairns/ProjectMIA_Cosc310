@@ -1,75 +1,25 @@
 services:
-  # ----------------------------------------
-  # 1. Database Service (PostgreSQL Example)
-  # ----------------------------------------
   db:
-    image: postgres:14-alpine
-    container_name: projectmia_db
-    restart: always
+    image: postgres:14
     environment:
-      # Use these credentials in your database connection setup code
       POSTGRES_USER: projectuser
       POSTGRES_PASSWORD: projectpassword
       POSTGRES_DB: projectdb
     ports:
       - "5432:5432"
     volumes:
-      # Persist data outside the container
-      - postgres_data:/var/lib/postgresql/data/
-    healthcheck:
-      # Ensures the database is fully ready before the backend starts
-      test: ["CMD-SHELL", "pg_isready -U projectuser -d projectdb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - postgres_data:/var/lib/postgresql/data
 
-  # ----------------------------------------
-  # 2. Monolithic Application Service (Backend + UI)
-  # ----------------------------------------
-  app_monolith:
-    build:
-      context: ./backend # Tells Docker to use the ./backend folder as the build context
-      dockerfile: Dockerfile
-    container_name: projectmia_app
-    restart: always
-    # Expose the single port for both the UI (HTML) and the API endpoints
+  app:
+    build: ./backend
     ports:
       - "8000:8000"
     volumes:
-      # Mount the entire backend folder for development/hot-reloading
-      - ./backend:/app
-      # Ensure your data files (JSON/CSV) are available
-      - ./backend/app/data:/app/app/data
-    environment:
-      # FIX: Explicitly set the Python path to allow tests (e.g., from /app/Test) to import the 'app' package
-      PYTHONPATH: /app
-      # Set your database connection URL
-      DATABASE_URL: postgresql://projectuser:projectpassword@db:5432/projectdb
-      # Add your required External API Key/Secret here
-      EXTERNAL_API_KEY: 'YOUR_APPROVED_API_KEY_HERE'
-    depends_on:
-      db:
-        condition: service_healthy
-
-  # ----------------------------------------
-  # 3. Test Runner Service (Optional but recommended)
-  # ----------------------------------------
-  test:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: projectmia_test
-    volumes:
       - ./backend:/app
     environment:
-      PYTHONPATH: /app
-      DATABASE_URL: postgresql://projectuser:projectpassword@db:5432/projectdb
+      DATABASE_URL: postgres://projectuser:projectpassword@db:5432/projectdb
     depends_on:
-      db:
-        condition: service_healthy
-    command: pytest Test/ -v
-    profiles:
-      - test
+      - db
 
 volumes:
   postgres_data:

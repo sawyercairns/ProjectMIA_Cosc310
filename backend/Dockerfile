@@ -1,6 +1,5 @@
-# Code from https://www.digitalocean.com/community/tutorials/create-fastapi-app-using-docker-compose
-
 FROM python:3.12-slim 
+# Code from https://www.digitalocean.com/community/tutorials/create-fastapi-app-using-docker-compose
 
 # Set the working directory
 WORKDIR /app
