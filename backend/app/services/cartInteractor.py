@@ -73,3 +73,28 @@ def add_item(user_id: str, order_item: OrderItem):
     return cart.to_dict()
 
 
+def delete_item(user_id: str, product_id: str):
+    cart = load_cart(user_id)
+
+    try:
+        product_id_int = int(product_id)
+    except ValueError:
+        raise ValueError(f"Invalid product_id: {product_id}")
+
+    item_to_remove = None
+    for item in cart._cart_items:
+        if item._product_id == product_id_int:
+            item_to_remove = item
+            break
+    
+    if item_to_remove is None:
+        raise ValueError(f"Product with id {product_id} not found in cart")
+  
+    cart._cart_value -= item_to_remove._price * item_to_remove._quantity
+    cart._cart_items.remove(item_to_remove)
+    
+    _save_cart(cart)
+    return cart.to_dict()
+
+
+

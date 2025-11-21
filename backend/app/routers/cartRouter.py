@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from backend.app.services.cartInteractor import load_cart, add_item
+from backend.app.services.cartInteractor import load_cart, add_item, delete_item
 from backend.app.schemas.orderItemClass import OrderItem
 from pydantic import BaseModel
 from decimal import Decimal
@@ -37,5 +37,17 @@ def add_item_endpoint(request: AddItemRequest):
     add_item(request.user_id, order_item)
     cart = load_cart(request.user_id)
     return cart.to_dict()
+
+
+@router.delete("/items", response_model=dict)
+def delete_item_endpoint(user_id: str, product_id: str):
+    try:
+        cart = delete_item(user_id, product_id)
+        return cart
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
