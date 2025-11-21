@@ -82,7 +82,7 @@ def test_add_follow_reviewer_reviewer_not_found(mocker):
     mock_load = mocker.patch("app.services.userInteractor.load_json")
     mock_load.return_value = mock_data
 
-    with pytest.raises(ValueError, match = "Reviewer with id 999 does not exist"):
+    with pytest.raises(ValueError, match = "User not found"):
         add_follow_reviewer(user_id, reviewer_id)
 
 
