@@ -1,8 +1,8 @@
 from typing import List
 import decimal
 from datetime import datetime
-from backend.app.schemas.orderItemClass import OrderItem
-from backend.app.schemas.addressClass import Address
+from app.schemas.orderItemClass import OrderItem
+from app.schemas.addressClass import Address
 
 
 class Order:
@@ -20,7 +20,7 @@ class Order:
                  order_id: int = None):
         
         if order_id is None:
-            from backend.app.services.orderInteractor import get_next_order_id
+            from app.services.orderInteractor import get_next_order_id
             self._order_id = get_next_order_id()
         else:
             # Only used when reconstructing from JSON

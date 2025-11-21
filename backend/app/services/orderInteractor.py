@@ -1,11 +1,11 @@
 import json
 import os
-from backend.app.schemas.orderClass import Order
-from backend.app.schemas.orderItemClass import OrderItem
-from backend.app.schemas.addressClass import Address
+from app.schemas.orderClass import Order
+from app.schemas.orderItemClass import OrderItem
+from app.schemas.addressClass import Address
 from pathlib import Path
 from typing import List
-from backend.app.services.Interactor import load_json, write_to_json
+from app.services.Interactor import load_json, write_to_json
 
 """
 This file contains the functions for order operations.

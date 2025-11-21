@@ -1,6 +1,6 @@
 from typing import List
 import decimal
-from backend.app.schemas.orderItemClass import OrderItem
+from app.schemas.orderItemClass import OrderItem
 import json, os
 from pathlib import Path
 

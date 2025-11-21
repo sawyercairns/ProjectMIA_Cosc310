@@ -3,7 +3,7 @@
 import json
 import os
 from pathlib import Path
-from backend.app.services.Interactor import load_json, write_to_json
+from app.services.Interactor import load_json, write_to_json
 orders_path = Path(__file__).resolve().parents[1] / "data" / "pastOrders.json"
 
 def get_orders(user_id:str):

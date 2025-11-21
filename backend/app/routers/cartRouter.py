@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from backend.app.services.cartInteractor import load_cart, add_item, delete_item
-from backend.app.schemas.orderItemClass import OrderItem
+from app.services.cartInteractor import load_cart, add_item, delete_item
+from app.schemas.orderItemClass import OrderItem
 from pydantic import BaseModel
 from decimal import Decimal
 

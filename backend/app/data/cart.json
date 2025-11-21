@@ -1,7 +1,10 @@
 {
-    "0": {
-        "cart_value": "0",
-        "cart_items": [
-        ]
-    }
+  "0": {
+    "cart_value": "0",
+    "cart_items": []
+  },
+  "123": {
+    "cart_value": "0",
+    "cart_items": []
+  }
 }

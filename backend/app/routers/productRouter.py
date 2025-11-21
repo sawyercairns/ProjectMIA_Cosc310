@@ -1,10 +1,10 @@
 from typing import List
 from fastapi import APIRouter, status
-from backend.app.schemas.productClass import Product
+from app.schemas.productClass import Product
 import json
-from backend.app.services import productInteractor
-from backend.app.services.userInteractor import get_user
-from backend.app.schemas.userClass import User
+from app.services import productInteractor
+from app.services.userInteractor import get_user
+from app.schemas.userClass import User
 
 router = APIRouter(prefix="/products", tags=["products"])
 

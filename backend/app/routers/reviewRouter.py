@@ -2,9 +2,9 @@ from datetime import date
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from backend.app.schemas.reviewClass import Review
-from backend.app.services import reviewInteractor
-from backend.app.services.userInteractor import get_user
+from app.schemas.reviewClass import Review
+from app.services import reviewInteractor
+from app.services.userInteractor import get_user
 
 router = APIRouter(prefix="/reviews", tags=["reviews"])
 

@@ -1,8 +1,8 @@
 import json
 import os
 from pathlib import Path
-from backend.app.schemas.userClass import User
-from backend.app.services.Interactor import create_item, remove_item, load_json, write_to_json
+from app.schemas.userClass import User
+from app.services.Interactor import create_item, remove_item, load_json, write_to_json
 
 
 # Takes user email, password, and the users.json to check if they exist

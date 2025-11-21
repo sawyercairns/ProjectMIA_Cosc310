@@ -1,10 +1,10 @@
 from typing import List
-from backend.app.schemas.productClass import Product
+from app.schemas.productClass import Product
 import json
 import os
 from pathlib import Path
 
-from backend.app.services.Interactor import create_item, remove_item
+from app.services.Interactor import create_item, remove_item
 
 #Adds new_product to end of json file with id incremented
 def create_product(p: Product):

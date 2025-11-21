@@ -1,10 +1,10 @@
 import json
 import os
 import decimal
-from backend.app.schemas.cartClass import Cart
-from backend.app.schemas.orderItemClass import OrderItem
+from app.schemas.cartClass import Cart
+from app.schemas.orderItemClass import OrderItem
 from pathlib import Path
-from backend.app.services.Interactor import load_json, write_to_json
+from app.services.Interactor import load_json, write_to_json
 
 """
 This file is the functions that the user can interact with.

@@ -1,5 +1,5 @@
 
-from backend.app.schemas.productClass import Product
+from app.schemas.productClass import Product
 from datetime import date
 from typing import List, Optional
 
