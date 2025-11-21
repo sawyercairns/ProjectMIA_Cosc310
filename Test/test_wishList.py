@@ -1,7 +1,6 @@
 import pytest
 from datetime import date
 from backend.app.schemas.wishListClass import WishList, WishListEntry
-from pathlib import Path
 from backend.app.services.wishListInteractor import _save_wishList, load_wishList, remove_entry, add_entry
 
 
@@ -40,64 +39,124 @@ def test_wishlist_remove_entry():
     assert wl.entries[0].product_id == 102
 
 
-
 """
-Integration Tests
+Integration Tests (using mocking)
 """
 
-import backend.app.services.wishListInteractor as interactor
 
-# Temp JSON in the same folder
-TEST_JSON_PATH = Path(__file__).parent / "test_wishlist.json"
-interactor.path = TEST_JSON_PATH 
-
-@pytest.fixture(autouse=True)
-def cleanup():
-    if TEST_JSON_PATH.exists():
-        TEST_JSON_PATH.unlink()
-    TEST_JSON_PATH.write_text("{}")
-    yield
-    if TEST_JSON_PATH.exists():
-        TEST_JSON_PATH.unlink()
-
-
-def test_save_and_load_wishlist():
-    wl = WishList(user_id = "user21")
-    entry = WishListEntry(product_id=101, date_added=date.today())
+def test_save_and_load_wishlist(mocker):
+    """Test saving and loading wishlist with mocked file operations"""
+    user_id = "user21"
+    today = date.today()
+    
+    mock_load = mocker.patch("backend.app.services.wishListInteractor.load_json")
+    mock_load.return_value = {}
+    
+    mock_write = mocker.patch("backend.app.services.wishListInteractor.write_to_json")
+    
+    mock_exists = mocker.patch("backend.app.services.wishListInteractor.os.path.exists")
+    mock_exists.return_value = True
+    
+    wl = WishList(user_id=user_id)
+    entry = WishListEntry(product_id=101, date_added=today)
     wl.add_entry(entry)
-
+    
     _save_wishList(wl)
-    loaded_wl = load_wishList("user21")
+    
+    mock_write.assert_called_once()
+    written_data = mock_write.call_args[0][1]
+    assert user_id in written_data
+    assert len(written_data[user_id]["entries"]) == 1
+    
 
-    assert loaded_wl.user_id == "user21"
+    mock_load.return_value = written_data
+    
+
+    loaded_wl = load_wishList(user_id)
+    assert loaded_wl.user_id == user_id
     assert len(loaded_wl.entries) == 1
     assert loaded_wl.entries[0].product_id == 101
 
 
-# Looking to see if adding entrys work plus no duplicate entrys
-def test_add_entry_integration():
-    add_entry("user21", 101)
-    wl = load_wishList("user21")
-    assert len(wl.entries) == 1
-    assert wl.entries[0].product_id == 101
+def test_add_entry_integration(mocker):
+    """Test adding entries with mocked file operations"""
+    user_id = "user21"
+    
+    mock_exists = mocker.patch("backend.app.services.wishListInteractor.os.path.exists")
+    mock_exists.return_value = True
+   
+    mock_load = mocker.patch("backend.app.services.wishListInteractor.load_json")
+    mock_load.return_value = {}
+    
+    mock_write = mocker.patch("backend.app.services.wishListInteractor.write_to_json")
 
-    add_entry("user21", 101)
-    wl = load_wishList("user21")
-    assert len(wl.entries) == 1
+    add_entry(user_id, 101)
+    
+    written_data = mock_write.call_args[0][1]
+    assert len(written_data[user_id]["entries"]) == 1
+    assert written_data[user_id]["entries"][0]["product_id"] == 101
+    
+    mock_load.return_value = written_data
+    
+    add_entry(user_id, 101)
+    
+    written_data = mock_write.call_args[0][1]
+    assert len(written_data[user_id]["entries"]) == 1
 
 
-def test_remove_entry_integration():
-    add_entry("user21", 101)
-    add_entry("user21", 102)
+def test_remove_entry_integration(mocker):
+    """Test removing entries with mocked file operations"""
+    user_id = "user21"
+    today = date.today()
+    
+    mock_exists = mocker.patch("backend.app.services.wishListInteractor.os.path.exists")
+    mock_exists.return_value = True
+    
+    initial_data = {
+        user_id: {
+            "entries": [
+                {"product_id": 101, "date_added": today.isoformat()},
+                {"product_id": 102, "date_added": today.isoformat()}
+            ]
+        }
+    }
+    mock_load = mocker.patch("backend.app.services.wishListInteractor.load_json")
+    mock_load.return_value = initial_data
+    
+    mock_write = mocker.patch("backend.app.services.wishListInteractor.write_to_json")
+    
 
-    remove_entry("user21", 101)
-    wl = load_wishList("user21")
-    assert len(wl.entries) == 1
-    assert wl.entries[0].product_id == 102
+    remove_entry(user_id, 101)
 
-def test_add_entry_limit():
-    for i in range(10):
-        add_entry("user21", 100 + i)
+    mock_write.assert_called_once()
+    written_data = mock_write.call_args[0][1]
+    assert len(written_data[user_id]["entries"]) == 1
+    assert written_data[user_id]["entries"][0]["product_id"] == 102
+
+
+def test_add_entry_limit(mocker):
+    """Test that adding more than 10 entries raises an error"""
+    user_id = "user21"
+    today = date.today()
+    
+    mock_exists = mocker.patch("backend.app.services.wishListInteractor.os.path.exists")
+    mock_exists.return_value = True
+
+    entries = [
+        {"product_id": 100 + i, "date_added": today.isoformat()}
+        for i in range(10)
+    ]
+    mock_data = {
+        user_id: {
+            "entries": entries
+        }
+    }
+    mock_load = mocker.patch("backend.app.services.wishListInteractor.load_json")
+    mock_load.return_value = mock_data
+    
+    mock_write = mocker.patch("backend.app.services.wishListInteractor.write_to_json")
 
     with pytest.raises(ValueError, match="Too many entries in wishlist."):
-        add_entry("user21", 999)
+        add_entry(user_id, 999)
+    
+    mock_write.assert_not_called()
