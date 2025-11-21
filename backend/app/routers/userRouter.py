@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Body
 from backend.app.schemas.userClass import User
-from backend.app.services.userInteractor import get_user, remove_user, add_user, update_password
+from backend.app.services.userInteractor import get_user, remove_user, add_user, update_password, update_image_url
 
 router = APIRouter(prefix="/login", tags=["login"])
 
@@ -51,3 +51,19 @@ def update_user_password(user_id: str = Body(...),
 
     except FileNotFoundError as e:
         raise HTTPException(status_code = 500, detail=str(e))
+    
+@router.put("/image")
+def update_user_profile_image(user_id: str = Body(...),
+                              image_url: str = Body(...)):
+    try:
+        update_image_url(user_id, image_url)
+        return {"message": "Profile image updated successfully", "image_url": image_url}
+
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Something went wrong: {e}")
