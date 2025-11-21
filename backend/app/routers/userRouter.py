@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Body
 from backend.app.schemas.userClass import User
-from backend.app.services.userInteractor import get_user, remove_user, add_user, update_password, update_image_url
+from backend.app.services.userInteractor import get_user, remove_user, add_user, update_password, update_image_url, update_image_url ,add_follow_reviewer, delete_follow_reviewer
 
 router = APIRouter(prefix="/login", tags=["login"])
 
@@ -67,3 +67,29 @@ def update_user_profile_image(user_id: str = Body(...),
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Something went wrong: {e}")
+    
+@router.post("/follow")
+def add_reviewer_to_follow_list(user_id: str = Body(...),
+                                reviewer_id: str = Body(...)):
+    try:
+        add_follow_reviewer(user_id, reviewer_id)
+        return {"message": "Reviewer added to follow list successfully", "reviewer_id": reviewer_id}
+
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/follow")
+def remove_reviewer_from_follow_list(user_id: str = Body(...),
+                                     reviewer_id: str = Body(...)):
+    try:
+        delete_follow_reviewer(user_id, reviewer_id)
+        return {"message": "Reviewer removed from follow list successfully", "reviewer_id": reviewer_id}
+
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=500, detail=str(e))

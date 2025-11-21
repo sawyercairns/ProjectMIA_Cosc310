@@ -3,6 +3,9 @@
 # Created by: Ashton Raber
 # Reviewed by: 
 
+from typing import List
+
+
 class User:
     """
     User class just to store data and check if it is valid.
@@ -16,7 +19,8 @@ class User:
                 last_name: str = "",
                 age: int = 1,
                 is_admin = False,
-                image_url: str = ""):
+                image_url: str = "",
+                follow_reviewers_id: List[int] = None):
         
         self._user_id = user_id
         self.user_password = user_password
@@ -26,6 +30,7 @@ class User:
         self.age = age 
         self._is_admin = is_admin
         self._image_url = image_url
+        self._follow_reviewers_id = follow_reviewers_id if follow_reviewers_id is not None else []
 
     # -- user_id --
     @property
@@ -94,3 +99,12 @@ class User:
     @image_url.setter
     def image_url(self, new_url: str):
         self._image_url = new_url
+
+    # -- follow reviewers id --
+    @property
+    def follow_reviewers_id(self):
+        return self._follow_reviewers_id
+    
+    @follow_reviewers_id.setter
+    def follow_reviewers_id(self, new_list: List[int]):
+        self._follow_reviewers_id = new_list

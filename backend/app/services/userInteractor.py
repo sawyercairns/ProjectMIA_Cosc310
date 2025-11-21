@@ -80,3 +80,50 @@ def update_image_url(user_id: str,image_url: str):
     user["image_url"] = image_url
 
     write_to_json(file_name, data)
+
+
+def add_follow_reviewer(user_id: str, reviewer_id: str):
+    """Add a reviewer to the user's follow list"""
+    data = load_json(file_name)
+    
+    if data == None:
+        raise FileNotFoundError("JSON file not found error")
+
+    user = next((u for u in data if u["user_id"] == user_id), None)
+    if user is None:
+        raise ValueError("User not found")
+
+
+    reviewer = next((u for u in data if u["user_id"] == reviewer_id), None)
+    if reviewer is None:
+        raise ValueError(f"Reviewer with id {reviewer_id} does not exist")
+
+    if "follow_reviewers_id" not in user:
+        user["follow_reviewers_id"] = []
+    
+    if reviewer_id not in user["follow_reviewers_id"]:
+        user["follow_reviewers_id"].append(reviewer_id)
+    
+    write_to_json(file_name, data)
+
+
+def delete_follow_reviewer(user_id: str, reviewer_id: str):
+    data = load_json(file_name)
+    
+    if data == None:
+        raise FileNotFoundError("JSON file not found error")
+
+    user = next((u for u in data if u["user_id"] == user_id), None)
+    if user is None:
+        raise ValueError("User not found")
+
+
+    if "follow_reviewers_id" not in user:
+        raise ValueError("User has no follow list")
+
+    if reviewer_id in user["follow_reviewers_id"]:
+        user["follow_reviewers_id"].remove(reviewer_id)
+    else:
+        raise ValueError(f"Reviewer {reviewer_id} not found in follow list")
+    
+    write_to_json(file_name, data)
