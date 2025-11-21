@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
-from backend.app.services.orderInteractor import load_orders, add_order, get_order_by_id
-from backend.app.schemas.orderClass import Order
-from backend.app.schemas.orderItemClass import OrderItem
-from backend.app.schemas.addressClass import Address
+from app.services.orderInteractor import load_orders, add_order, get_order_by_id
+from app.schemas.orderClass import Order
+from app.schemas.orderItemClass import OrderItem
+from app.schemas.addressClass import Address
 from pydantic import BaseModel
 from typing import List, Optional
 from decimal import Decimal

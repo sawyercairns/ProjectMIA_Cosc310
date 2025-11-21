@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: projectuser
+      POSTGRES_PASSWORD: projectpassword
+      POSTGRES_DB: projectdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      DATABASE_URL: postgres://projectuser:projectpassword@db:5432/projectdb
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

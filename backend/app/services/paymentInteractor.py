@@ -1,9 +1,9 @@
 import json
 import os
-from backend.app.schemas.paymentClass import Payment
+from app.schemas.paymentClass import Payment
 from pathlib import Path
 from datetime import date
-from backend.app.services.Interactor import load_json, write_to_json
+from app.services.Interactor import load_json, write_to_json
 
 """
 This file is the functions that the user can interact with.

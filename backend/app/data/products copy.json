@@ -1,0 +1,13 @@
+[
+  {
+    "product_id": "1",
+    "product_name": "Test Product",
+    "product_desc": "Test Description",
+    "price": 10.0,
+    "discount_price": 8.0,
+    "discount_percent": 20.0,
+    "rating": 0.0,
+    "rating_count": 0,
+    "units_sold": 0
+  }
+]

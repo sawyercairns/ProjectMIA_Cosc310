@@ -1,5 +1,5 @@
 import decimal
-from backend.app.schemas.productClass import Product
+from app.schemas.productClass import Product
 
 class OrderItem:
 

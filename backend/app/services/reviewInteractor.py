@@ -2,8 +2,8 @@ import json
 import os
 from pathlib import Path
 
-from backend.app.schemas.reviewClass import Review
-from backend.app.services.Interactor import create_item, remove_item
+from app.schemas.reviewClass import Review
+from app.services.Interactor import create_item, remove_item
 
 def create_review(r:Review):
     item = {

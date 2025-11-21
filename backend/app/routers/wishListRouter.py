@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from backend.app.services.wishListInteractor import load_wishList, add_entry, remove_entry
+from app.services.wishListInteractor import load_wishList, add_entry, remove_entry
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/wishlist", tags=["WishList"])

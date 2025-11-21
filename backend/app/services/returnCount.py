@@ -2,8 +2,8 @@
 # Param is the requesting User to check for admin and user they want to see returns for.
 # Returns the count.
 
-from backend.app.services import pastOrdersInteractor
-from backend.app.schemas.userClass import User
+from app.services import pastOrdersInteractor
+from app.schemas.userClass import User
 
 def trackUserReturns(admin: User, user_id: str) -> int:
 

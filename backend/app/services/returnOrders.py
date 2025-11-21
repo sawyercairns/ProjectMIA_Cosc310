@@ -2,7 +2,7 @@
 
 import os
 from datetime import datetime, timedelta
-from backend.app.services.pastOrdersInteractor import save_orders, get_orders
+from app.services.pastOrdersInteractor import save_orders, get_orders
 
 
 def check_if_order_exists(userid:str, orderid:int):

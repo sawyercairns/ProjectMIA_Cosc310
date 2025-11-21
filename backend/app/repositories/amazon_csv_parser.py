@@ -7,9 +7,9 @@ from pathlib import Path
 from datetime import datetime
 
 try:
-    from backend.app.schemas.productClass import Product
-    from backend.app.schemas.userClass import User
-    from backend.app.schemas.reviewClass import Review
+    from app.schemas.productClass import Product
+    from app.schemas.userClass import User
+    from app.schemas.reviewClass import Review
 except ImportError:
     import sys
     sys.path.append(str(Path(__file__).resolve().parents[2]))

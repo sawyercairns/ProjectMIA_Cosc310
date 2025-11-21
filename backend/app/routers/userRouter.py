@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Body
-from backend.app.schemas.userClass import User
-from backend.app.services.userInteractor import get_user, remove_user, add_user, update_password, update_image_url, update_image_url ,add_follow_reviewer, delete_follow_reviewer
+from app.schemas.userClass import User
+from app.services.userInteractor import get_user, remove_user, add_user, update_password, update_image_url, update_image_url ,add_follow_reviewer, delete_follow_reviewer
 
 router = APIRouter(prefix="/login", tags=["login"])
 
