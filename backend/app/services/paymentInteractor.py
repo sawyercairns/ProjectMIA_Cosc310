@@ -1,8 +1,9 @@
 import json
 import os
-from backend.app.schemas.paymentClass import Payment
+from app.schemas.paymentClass import Payment
 from pathlib import Path
 from datetime import date
+from app.services.Interactor import load_json, write_to_json
 
 """
 This file is the functions that the user can interact with.
@@ -14,9 +15,8 @@ path = Path(__file__).resolve().parents[1] / "data" / "payment.json"
 def load_payment(user_id: str) -> Payment:
     if not os.path.exists(path):
         raise FileNotFoundError("payment.json file not found")
-
-    with open(path, "r") as f:
-        data = json.load(f)
+    
+    data = load_json(path.name)
 
     user_payment = data.get(user_id)
 
@@ -53,11 +53,7 @@ def _save_payment(payment: Payment):
         "expiration_date": payment.expiration_date
     }
 
-    temp_path = Path(str(path) + ".tmp")
-    with open(temp_path, "w") as f:
-        json.dump(data, f, indent=4)
-
-    os.replace(temp_path, path)
+    write_to_json(path.name, data)
 
 
 def update_payment(user_id: str, card_number: str, CVV: str, expiration_date: date):

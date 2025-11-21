@@ -1,9 +1,10 @@
 import json
 import os
 import decimal
-from backend.app.schemas.cartClass import Cart
-from backend.app.schemas.orderItemClass import OrderItem
+from app.schemas.cartClass import Cart
+from app.schemas.orderItemClass import OrderItem
 from pathlib import Path
+from app.services.Interactor import load_json, write_to_json
 
 """
 This file is the functions that the user can interact with.
@@ -17,8 +18,7 @@ def load_cart(user_id: str) -> Cart:
     if not os.path.exists(path):
         raise FileNotFoundError("File can not be found")
     
-    with open(path, "r") as f:
-        data = json.load(f)
+    data = load_json(path.name)
 
     user_cart = data.get(user_id)
 
@@ -62,8 +62,7 @@ def _save_cart(cart: Cart):
     existing_cart.update(new_cart_data)
     data[user_id] = existing_cart
 
-    with open(path, "w") as f:
-        json.dump(data, f, indent=4)
+    write_to_json(path.name, data)
 
 
 def add_item(user_id: str, order_item: OrderItem):
@@ -72,5 +71,30 @@ def add_item(user_id: str, order_item: OrderItem):
     cart._cart_value += order_item._price * order_item._quantity
     _save_cart(cart)
     return cart.to_dict()
+
+
+def delete_item(user_id: str, product_id: str):
+    cart = load_cart(user_id)
+
+    try:
+        product_id_int = int(product_id)
+    except ValueError:
+        raise ValueError(f"Invalid product_id: {product_id}")
+
+    item_to_remove = None
+    for item in cart._cart_items:
+        if item._product_id == product_id_int:
+            item_to_remove = item
+            break
+    
+    if item_to_remove is None:
+        raise ValueError(f"Product with id {product_id} not found in cart")
+  
+    cart._cart_value -= item_to_remove._price * item_to_remove._quantity
+    cart._cart_items.remove(item_to_remove)
+    
+    _save_cart(cart)
+    return cart.to_dict()
+
 
 

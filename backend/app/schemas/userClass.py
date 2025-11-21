@@ -3,6 +3,9 @@
 # Created by: Ashton Raber
 # Reviewed by: 
 
+from typing import List
+
+
 class User:
     """
     User class just to store data and check if it is valid.
@@ -15,7 +18,9 @@ class User:
                 first_name: str = "",
                 last_name: str = "",
                 age: int = 1,
-                is_admin = False):
+                is_admin = False,
+                image_url: str = "",
+                follow_reviewers_id: List[int] = None):
         
         self._user_id = user_id
         self.user_password = user_password
@@ -24,6 +29,8 @@ class User:
         self.last_name = last_name
         self.age = age 
         self._is_admin = is_admin
+        self._image_url = image_url
+        self._follow_reviewers_id = follow_reviewers_id if follow_reviewers_id is not None else []
 
     # -- user_id --
     @property
@@ -84,8 +91,20 @@ class User:
     def is_admin(self):
         return self._is_admin
 
-    # -- utility
-    """
-    def remove_user_account(self):
-    Need to create the JSON file to delete the user from plus the interactor for it
-    """
+    # -- users profile image url --
+    @property
+    def image_url(self):
+        return self._image_url
+    
+    @image_url.setter
+    def image_url(self, new_url: str):
+        self._image_url = new_url
+
+    # -- follow reviewers id --
+    @property
+    def follow_reviewers_id(self):
+        return self._follow_reviewers_id
+    
+    @follow_reviewers_id.setter
+    def follow_reviewers_id(self, new_list: List[int]):
+        self._follow_reviewers_id = new_list

@@ -1,8 +1,9 @@
 import json
 import os
-from backend.app.schemas.wishListClass import WishList, WishListEntry
+from app.schemas.wishListClass import WishList, WishListEntry
 from pathlib import Path
 from datetime import date
+from app.services.Interactor import load_json, write_to_json
 
 """
 This file is the functions that the user can interact with.
@@ -15,8 +16,7 @@ def load_wishList(user_id: str) -> WishList:
     if not os.path.exists(path):
         raise FileNotFoundError("wishlist.json file not found")
 
-    with open(path, "r") as f:
-        data = json.load(f)
+    data = load_json(path.name)
 
     user_wishList = data.get(user_id)
 
@@ -49,15 +49,18 @@ def _save_wishList(wishList: WishList):
     user_id = str(wishList._user_id)
     data[user_id] = wishList.to_dict()
 
-    temp_path = Path(str(path) + ".tmp")
-    with open(temp_path, "w") as f:
-        json.dump(data, f, indent=4)
-
-    os.replace(temp_path, path)
+    write_to_json(path.name, data)
 
 
 def add_entry(user_id: str, product_id: int):
+    MAX_WISHLIST_ENTRIES = 10
+
     wishList = load_wishList(user_id)
+    entries_count = len(wishList.entries)
+
+    if entries_count >= MAX_WISHLIST_ENTRIES:
+        raise ValueError("Too many entries in wishlist.")
+
     entry = WishListEntry(product_id = product_id, date_added = date.today())
     wishList.add_entry(entry)
     _save_wishList(wishList)

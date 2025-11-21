@@ -1,10 +1,11 @@
 import json
 import os
-from backend.app.schemas.orderClass import Order
-from backend.app.schemas.orderItemClass import OrderItem
-from backend.app.schemas.addressClass import Address
+from app.schemas.orderClass import Order
+from app.schemas.orderItemClass import OrderItem
+from app.schemas.addressClass import Address
 from pathlib import Path
 from typing import List
+from app.services.Interactor import load_json, write_to_json
 
 """
 This file contains the functions for order operations.
@@ -86,10 +87,7 @@ def add_order(user_id: str, order: Order):
     
     data[user_id_str][order_id_str] = order.to_dict()
 
-    tmp_path = path.with_suffix(".tmp")
-    with tmp_path.open("w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
-    os.replace(tmp_path, path)
+    write_to_json(path.name, data)
     
     return order.to_dict()
 

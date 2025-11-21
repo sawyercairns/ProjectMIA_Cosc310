@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from backend.app.services.paymentInteractor import load_payment, update_payment
+from app.services.paymentInteractor import load_payment, update_payment
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/payment", tags=["Payment"])
