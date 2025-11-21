@@ -30,3 +30,13 @@ def get_reviews(user_id: int):
             if int(review["user_id"]) == user_id:
                 review_list.append(review)                      
     return review_list
+
+def get_product_reviews(product_id: int):
+    path = Path(__file__).resolve().parents[1] / "data" / "reviews.json"
+    review_list = list()
+    with path.open("r", encoding="UTF-8") as f:
+        reviews = json.load(f)
+        for review in reviews:
+            if int(review["product_id"]) == product_id:
+                review_list.append(review)                      
+    return review_list
