@@ -14,6 +14,23 @@ Handles loading, saving, and managing user orders.
 
 path = Path(__file__).resolve().parents[1] / "data" / "orders.json"
 
+
+def _reconstruct_order_items(order_data: dict) -> List[OrderItem]:
+    """
+    Helper function to reconstruct OrderItem objects from order data dictionary.
+    Extracts repeated OrderItem reconstruction pattern.
+    """
+    return [
+        OrderItem(
+            product_id=item["product_id"],
+            product_name=item["product_name"],
+            product_desc=item["product_desc"],
+            quantity=item["quantity"],
+            price=item["price"]
+        )
+        for item in order_data.get("order_items", [])
+    ]
+
 def load_orders(user_id: str) -> List[Order]:
     """
     Load all orders for a specific user.
@@ -31,16 +48,7 @@ def load_orders(user_id: str) -> List[Order]:
 
     orders = []
     for order_data in user_orders_list:
-        items = [
-            OrderItem(
-                product_id=item["product_id"],
-                product_name=item["product_name"],
-                product_desc=item["product_desc"],
-                quantity=item["quantity"],
-                price=item["price"]
-            )
-            for item in order_data.get("order_items", [])
-        ]
+        items = _reconstruct_order_items(order_data)
 
         address = None
         if order_data.get("address"):
@@ -123,16 +131,7 @@ def get_order_by_id(order_id: int, user_id: str = None) -> Order:
         if order_data is None:
             return None
    
-    items = [
-        OrderItem(
-            product_id=item["product_id"],
-            product_name=item["product_name"],
-            product_desc=item["product_desc"],
-            quantity=item["quantity"],
-            price=item["price"]
-        )
-        for item in order_data.get("order_items", [])
-    ]
+    items = _reconstruct_order_items(order_data)
 
     address = None
     if order_data.get("address"):
