@@ -10,6 +10,9 @@ This file is the functions that the user can interact with.
 
 """
 
+# Configuration constants
+MAX_WISHLIST_ENTRIES = 10
+
 path = Path(__file__).resolve().parents[1] / "data" / "wishlist.json"
 
 def load_wishList(user_id: str) -> WishList:
@@ -51,13 +54,11 @@ def _save_wishList(wishList: WishList):
 
 
 def add_entry(user_id: str, product_id: int):
-    MAX_WISHLIST_ENTRIES = 10
-
     wishList = load_wishList(user_id)
     entries_count = len(wishList.entries)
 
     if entries_count >= MAX_WISHLIST_ENTRIES:
-        raise ValueError("Too many entries in wishlist.")
+        raise ValueError(f"Wishlist limit exceeded. Maximum {MAX_WISHLIST_ENTRIES} entries allowed.")
 
     entry = WishListEntry(product_id = product_id, date_added = date.today())
     wishList.add_entry(entry)
