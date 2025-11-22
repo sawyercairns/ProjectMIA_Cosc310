@@ -2,7 +2,7 @@
 
 import os
 from datetime import datetime, timedelta
-from app.services.pastOrdersInteractor import save_orders, get_orders
+from app.services.orderInteractor import load_orders, save_orders
 
 
 def check_if_order_exists(userid:str, orderid:int):
@@ -11,15 +11,17 @@ def check_if_order_exists(userid:str, orderid:int):
 
 def check_if_order_exists_in_orders(orders, orderid:int):
     for order in orders:
-        if order["order_id"] == orderid:
+        if order.order_id == orderid:
             return order
     return None
 def check_time_return_window(orderdate:str) -> bool:
     ordertime = datetime.fromisoformat(orderdate)
     return ((datetime.now() - ordertime) <= timedelta(days=30))
 
-def not_refunded(order:dict) -> bool:
-    return not order.get("returned", False)
+
+def not_refunded(order) -> bool:
+    return not order.returned
+
 
 '''
 # PLACEHOLDER for how we're gonna simulate returns
@@ -30,8 +32,8 @@ def make_payment_refund():
                  
 def update_refund_status(userid:str, orders, orderid: int):
     for order in orders:
-        if order["order_id"] == orderid:
-            order["returned"] = True
+         if order.order_id == orderid:  
+            order.returned = True
             break
     save_orders(userid, orders)
 
@@ -40,20 +42,21 @@ def update_refund_status(userid:str, orders, orderid: int):
 
 # Actually processing a return using the above methods
 def process_return(userid:str, orderid:int):
-    orders = get_orders(userid)
+    orders = load_orders(userid)
     order = check_if_order_exists_in_orders(orders, orderid)
     if not order:
         print("Order not found.")
         return False
 
-    if not check_time_return_window(order["date"]):
+
+    if not check_time_return_window(order.order_date):
         print("Order exceeds 30 day return window")
         return False
-    
+   
     if not not_refunded(order):
         print("Order has already been returned.")
         return False
-    
+   
     # We'd now use the make_payment_refund to refund the payment to the client
     # Empty placeholder for now for payment
 

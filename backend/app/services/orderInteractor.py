@@ -23,14 +23,14 @@ def load_orders(user_id: str) -> List[Order]:
         with open(path, "w") as f:
             json.dump({}, f, indent=4)
         return []
-    
+   
     with open(path, "r") as f:
         data = json.load(f)
 
-    user_orders_dict = data.get(str(user_id), {})
+    user_orders_list = data.get(str(user_id), {})
 
     orders = []
-    for order_id_str, order_data in user_orders_dict.items():
+    for order_data in user_orders_list:
         items = [
             OrderItem(
                 product_id=item["product_id"],
@@ -58,7 +58,8 @@ def load_orders(user_id: str) -> List[Order]:
             user_id=order_data["user_id"],
             order_items=items,
             address=address,
-            order_date=order_data["order_date"]
+            order_date=order_data["order_date"],
+            returned=order_data.get("returned", False)
         )
 
         orders.append(order)
@@ -81,14 +82,14 @@ def add_order(user_id: str, order: Order):
 
     user_id_str = str(user_id)
     order_id_str = str(order.order_id)
-    
+   
     if user_id_str not in data:
-        data[user_id_str] = {}
-    
-    data[user_id_str][order_id_str] = order.to_dict()
+        data[user_id_str] = []
+   
+    data[user_id_str].append(order.to_dict())
 
     write_to_json(path.name, data)
-    
+   
     return order.to_dict()
 
 
@@ -98,7 +99,7 @@ def get_order_by_id(order_id: int, user_id: str = None) -> Order:
     """
     if not os.path.exists(path):
         return None
-    
+   
     with open(path, "r") as f:
         try:
             data = json.load(f)
@@ -106,7 +107,7 @@ def get_order_by_id(order_id: int, user_id: str = None) -> Order:
             return None
 
     order_id_str = str(order_id)
-    
+   
     if user_id is not None:
         user_orders = data.get(str(user_id), {})
         if order_id_str not in user_orders:
@@ -118,10 +119,10 @@ def get_order_by_id(order_id: int, user_id: str = None) -> Order:
             if order_id_str in user_orders:
                 order_data = user_orders[order_id_str]
                 break
-        
+       
         if order_data is None:
             return None
-    
+   
     items = [
         OrderItem(
             product_id=item["product_id"],
@@ -149,7 +150,8 @@ def get_order_by_id(order_id: int, user_id: str = None) -> Order:
         user_id=order_data["user_id"],
         order_items=items,
         address=address,
-        order_date=order_data["order_date"]
+        order_date=order_data["order_date"],
+        returned=order_data.get("returned", False)
     )
 
 
@@ -159,7 +161,7 @@ def get_next_order_id() -> int:
     """
     if not os.path.exists(path):
         return 1
-    
+   
     with open(path, "r") as f:
         try:
             data = json.load(f)
@@ -169,9 +171,33 @@ def get_next_order_id() -> int:
     max_id = 0
 
     for user_orders in data.values():
-        for order_id_str, order_data in user_orders.items():
+        for order_data in user_orders:
             order_id = order_data["order_id"]
             if order_id > max_id:
                 max_id = order_id
-    
+   
     return max_id + 1
+
+
+def save_orders(user_id: str, orders: list):
+    """
+    Save a user's orders (list of Order objects) back to orders.json.
+    """
+    from app.services.orderInteractor import path  
+    # Load existing JSON
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = {}
+    else:
+        data = {}
+   
+    # Convert Order objects to dicts since I didnt use dicts initially
+    data[str(user_id)] = [o.to_dict() if not isinstance(o, dict) else o for o in orders]
+   
+    # Save back
+    from app.services.Interactor import write_to_json
+    write_to_json(path.name, data)
+    
