@@ -7,8 +7,6 @@ from app.services.Interactor import load_json, write_to_json
 orders_path = Path(__file__).resolve().parents[1] / "data" / "pastOrders.json"
 
 def get_orders(user_id:str):
-    if not os.path.exists(orders_path):
-        return []
     
     data = load_json(orders_path.name)
 

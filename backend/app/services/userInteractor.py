@@ -9,11 +9,7 @@ from app.services.Interactor import create_item, remove_item, load_json, write_t
 # Returns either user it finds or null (None)
 def get_user(uEmail, uPassword):
     data = load_json(file_name)
-    
-    if data is None:
-        print("JSON file not found error")
-        return None
-       
+           
     for user in data:
         if user.get("email") == uEmail and user.get("user_password") == uPassword:
             return User(int(user["user_id"]),
@@ -58,9 +54,6 @@ def update_password(user_id: str, old_password: str, new_password: str):
 
     data = load_json(file_name)
 
-    if data == None:
-        raise FileNotFoundError("JSON file not found error")
-
     user = find_user_by_id(data, user_id)
 
     if user.get("user_password") != old_password:
@@ -75,9 +68,6 @@ def update_image_url(user_id: str,image_url: str):
 
     data = load_json(file_name)
     
-    if data == None:
-        raise FileNotFoundError("JSON file not found error")
-
     user = find_user_by_id(data, user_id)
 
     user["image_url"] = image_url
@@ -89,9 +79,6 @@ def add_follow_reviewer(user_id: str, reviewer_id: str):
     """Add a reviewer to the user's follow list"""
     data = load_json(file_name)
     
-    if data == None:
-        raise FileNotFoundError("JSON file not found error")
-
     user = find_user_by_id(data, user_id)
 
     #Confirms that the reviewer exists
@@ -109,9 +96,6 @@ def add_follow_reviewer(user_id: str, reviewer_id: str):
 def delete_follow_reviewer(user_id: str, reviewer_id: str):
     data = load_json(file_name)
     
-    if data == None:
-        raise FileNotFoundError("JSON file not found error")
-
     user = find_user_by_id(data, user_id)
 
     if "follow_reviewers_id" not in user:

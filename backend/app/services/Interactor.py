@@ -6,6 +6,8 @@ from pathlib import Path
 def load_json(file_name:str):
     path = Path(__file__).resolve().parents[1] / "data" / file_name
     with path.open("r", encoding="UTF-8") as f:
+        if f == None:
+            raise FileNotFoundError("JSON file not found error")
         return json.load(f)
 
 def write_to_json(file_name:str, data):
