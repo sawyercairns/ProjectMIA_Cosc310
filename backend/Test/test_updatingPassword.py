@@ -63,7 +63,8 @@ def test_update_password_user_not_found(mock_user_data):
 def test_update_password_json_file_not_found(mock_user_data):
     mock_load, mock_write = mock_user_data
     # Test when JSON file is not found
-    mock_load.return_value = None
+    mock_load.side_effect = FileNotFoundError("JSON file not found error")
+    
 
     try:
         update_password("user1", "oldpass", "newpass")

@@ -111,7 +111,7 @@ def test_update_password_incorrect_old_password(mocker):
 def test_update_password_file_not_found(mocker):
     """Test password update handles file not found error"""
     mock_load_json = mocker.patch("app.services.userInteractor.load_json")
-    mock_load_json.return_value = None
+    mock_load_json.side_effect = FileNotFoundError("JSON file not found error")
     
     response = client.put(
         "/login/password",
