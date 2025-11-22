@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Body
 from app.schemas.userClass import User
-from app.services.userInteractor import get_user, remove_user, add_user, update_password, update_image_url, update_image_url ,add_follow_reviewer, delete_follow_reviewer
+from app.services.userInteractor import get_user, remove_user, add_user, update_password, update_image_url, update_image_url ,add_follow_reviewer, delete_follow_reviewer, authenticate_admin
 
 router = APIRouter(prefix="/login", tags=["login"])
 
@@ -16,12 +16,9 @@ def user_validation(email:str, password:str):
 
 @router.delete("{user_id}")
 def delete_user(user_id: str, email:str, password: str):
-    user = get_user(email, password)
-    if user is not None and user.is_admin:
-        remove_user(user_id)
-        return "USER REMOVED"
-    else:
-        return "REMOVAL FAILED"
+    authenticate_admin(email, password)
+    remove_user(user_id)
+    return "USER REMOVED"
 
 @router.post("")
 def new_user(email:str, password:str, first_name: str = "", last_name:str = "", age: int = 1):
@@ -30,13 +27,10 @@ def new_user(email:str, password:str, first_name: str = "", last_name:str = "", 
 
 @router.post("/admin")
 def new_admin(auth_email:str, auth_password:str, email:str, password:str, first_name: str = "", last_name:str = "", age: int = 1):
-    user = get_user(auth_email, auth_password)
+    authenticate_admin(auth_email, auth_password)
     u = User(0, password, email, first_name, last_name, age, True)
-    if user is not None and user.is_admin:
-        add_user(u)
-        return "ADMIN ADDED"
-    else:
-        return "ADD FAILED"
+    add_user(u)
+    return "ADMIN ADDED"
     
 @router.put("/password")
 def update_user_password(user_id: str = Body(...),
