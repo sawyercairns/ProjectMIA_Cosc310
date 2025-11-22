@@ -17,7 +17,9 @@ def test_validation_router(mocker):
     r = client.get("/login?email=Jimmy&password=NotAPassword")
     assert r.text == "\"INVALID USERNAME OR PASSWORD\""
 
-def test_add_remove_user():
+def test_add_remove_user(mocker):
+    mock_auth = mocker.patch("app.routers.userRouter.authenticate_admin")
+    mock_auth.return_value = User(0,"password","admin@admin.com", is_admin=True)
     r = client.post("/login?email=e@e.com&password=p")
     u = get_user("e@e.com", "p")
     assert u is not None
@@ -25,7 +27,9 @@ def test_add_remove_user():
     u = get_user("e@e.com", "p")
     assert u is None
 
-def test_add_remove_admin():
+def test_add_remove_admin(mocker):
+    mock_auth = mocker.patch("app.routers.userRouter.authenticate_admin")
+    mock_auth.return_value = User(0,"password","admin@admin.com", is_admin=True)
     r = client.post("/login/admin?auth_email=admin@admin.com&auth_password=password&email=e@e.com&password=p")
     u = get_user("e@e.com", "p")
     assert u is not None

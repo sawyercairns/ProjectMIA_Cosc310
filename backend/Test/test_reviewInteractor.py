@@ -32,3 +32,16 @@ def test_update_review():
 def test_update_nonexisting_review():
     with pytest.raises(ValueError):
         update_review(12345678999, 10, rating=5)
+
+def test_create_duplicate_review():
+    rev = Review(0, 999999, 10, date.today(), 4, 50, "Test", "Test")
+    create_review(rev)
+   
+    rev2  = Review(0, 999999, 10, date.today(), 3, 30, "Test 2", "Test 2")
+    
+    with pytest.raises(ValueError):
+        create_review(rev2)
+
+    remove = get_reviews(999999)
+    for review in remove:
+        remove_review(int(review["review_id"]))

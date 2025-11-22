@@ -5,7 +5,20 @@ from pathlib import Path
 from app.schemas.reviewClass import Review
 from app.services.Interactor import create_item, remove_item
 
+def has_reviewed(user_id: int, product_id: int) -> bool:
+    path = Path(__file__).resolve().parents[1] / "data" / "reviews.json"
+    with path.open("r", encoding="UTF-8") as f:
+        reviews = json.load(f)
+        for review in reviews:
+            if int(review["user_id"]) == user_id and int(review["product_id"]) == product_id:
+                return True
+    return False
+
 def create_review(r:Review):
+    # Check if user has reviewed the product already
+    if has_reviewed(r.user_id, r.product_id):
+        raise ValueError("User has already reviewed this product. Please update existing review instead.")
+    
     item = {
             "review_id": r.review_id,
             "user_id": r.user_id,

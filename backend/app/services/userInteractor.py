@@ -22,6 +22,18 @@ def get_user(uEmail, uPassword):
 
     return None
 
+
+def authenticate_admin(email: str, password: str) -> User:
+    """
+    Authenticate user and verify admin privileges.
+    Returns User object if valid admin, raises HTTPException otherwise.
+    """
+    from fastapi import HTTPException
+    user = get_user(email, password)
+    if user is None or not user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
 def remove_user(id):
     remove_item("users.json", "user_id", id)
 
