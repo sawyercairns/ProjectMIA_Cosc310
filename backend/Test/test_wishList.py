@@ -156,7 +156,7 @@ def test_add_entry_limit(mocker):
     
     mock_write = mocker.patch("app.services.wishListInteractor.write_to_json")
 
-    with pytest.raises(ValueError, match="Too many entries in wishlist."):
+    with pytest.raises(ValueError, match="Wishlist limit exceeded. Maximum 10 entries allowed."):
         add_entry(user_id, 999)
     
     mock_write.assert_not_called()
