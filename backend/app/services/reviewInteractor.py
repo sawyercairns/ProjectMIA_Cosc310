@@ -21,7 +21,7 @@ def create_review(r:Review):
 def remove_review(id:int):
     remove_item("reviews.json", "review_id", id)
 
-def get_reviews(user_id: int):
+def get_reviews(user_id: int = None, product_id: int = None):
     path = Path(__file__).resolve().parents[1] / "data" / "reviews.json"
     review_list = list()
     with path.open("r", encoding="UTF-8") as f:
@@ -30,3 +30,4 @@ def get_reviews(user_id: int):
             if int(review["user_id"]) == user_id:
                 review_list.append(review)                      
     return review_list
+
