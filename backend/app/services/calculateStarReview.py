@@ -1,11 +1,11 @@
 # Function to calculate the star review of a product based on user ratings
 # Input product_id and return integer star review.
 
-from app.services.reviewInteractor import get_product_reviews
+from app.services.reviewInteractor import get_reviews
 
 
 def calculate_star_review(product_id: int) -> int:
-    reviews = get_product_reviews(product_id)
+    reviews = get_reviews(product_id)
     if not reviews:
         return 0  
 

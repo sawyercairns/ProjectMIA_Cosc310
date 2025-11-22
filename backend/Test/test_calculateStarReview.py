@@ -6,11 +6,11 @@ from app.services.calculateStarReview import calculate_star_review
 def test_calculate_star_review(mocker):
     product_id = 123
 
-    mock_get_product_reviews = mocker.patch(
-        "app.services.calculateStarReview.get_product_reviews"
+    mock_get_reviews = mocker.patch(
+        "app.services.calculateStarReview.get_reviews"
     )
 
-    mock_get_product_reviews.return_value = [
+    mock_get_reviews.return_value = [
         {"rating": 5},
         {"rating": 4},
         {"rating": 3},
@@ -27,11 +27,11 @@ def test_calculate_star_review(mocker):
 def test_calculate_star_no_reviews(mocker):
     product_id = 456
 
-    mock_get_product_reviews = mocker.patch(
-        "app.services.calculateStarReview.get_product_reviews"
+    mock_get_reviews = mocker.patch(
+        "app.services.calculateStarReview.get_reviews"
     )
 
-    mock_get_product_reviews.return_value = []
+    mock_get_reviews.return_value = []
 
     star_review = calculate_star_review(product_id)
 
