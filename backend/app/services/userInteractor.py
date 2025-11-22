@@ -8,27 +8,19 @@ from app.services.Interactor import create_item, remove_item, load_json, write_t
 # Takes user email, password, and the users.json to check if they exist
 # Returns either user it finds or null (None)
 def get_user(uEmail, uPassword):
-    path = Path(__file__).resolve().parents[1] / "data" / "users.json"
-    try:
-        with open(path, 'r', encoding='utf-8') as file:
-            users = json.load(file)
-       
-        for user in users:
-            if user.get("email") == uEmail and user.get("user_password") == uPassword:
-                return User(int(user["user_id"]),
-                            user["user_password"], 
-                            user["email"], 
-                            user["first_name"], 
-                            user["last_name"], 
-                            int(user["age"]), 
-                            bool(user["is_admin"] if "is_admin" in user else False))
+    data = load_json(file_name)
+           
+    for user in data:
+        if user.get("email") == uEmail and user.get("user_password") == uPassword:
+            return User(int(user["user_id"]),
+                        user["user_password"], 
+                        user["email"], 
+                        user["first_name"], 
+                        user["last_name"], 
+                        int(user["age"]), 
+                        bool(user["is_admin"] if "is_admin" in user else False))
 
-
-        return None
-   
-    except FileNotFoundError:
-        print("JSON file not found error")
-        return None
+    return None
 
 def remove_user(id):
     remove_item("users.json", "user_id", id)
@@ -47,16 +39,22 @@ def add_user(u:User):
 
 file_name = "users.json"
 
+def find_user_by_id(data, user_id: str):
+    """Find and return a user by user_id from the data list"""
+    user = None
+    for u in data:
+        if u["user_id"] == user_id:
+            user = u
+            break
+    if user is None:
+        raise ValueError("User not found")
+    return user
+
 def update_password(user_id: str, old_password: str, new_password: str):
 
     data = load_json(file_name)
 
-    if data == None:
-        raise FileNotFoundError("JSON file not found error")
-
-    user = next((u for u in data if u["user_id"] == user_id), None)
-    if user is None:
-        raise ValueError("User not found")
+    user = find_user_by_id(data, user_id)
 
     if user.get("user_password") != old_password:
         raise ValueError("Existing password does not match")
@@ -70,12 +68,7 @@ def update_image_url(user_id: str,image_url: str):
 
     data = load_json(file_name)
     
-    if data == None:
-        raise FileNotFoundError("JSON file not found error")
-
-    user = next((u for u in data if u["user_id"] == user_id), None)
-    if user is None:
-        raise ValueError("User not found")
+    user = find_user_by_id(data, user_id)
 
     user["image_url"] = image_url
 
@@ -86,17 +79,10 @@ def add_follow_reviewer(user_id: str, reviewer_id: str):
     """Add a reviewer to the user's follow list"""
     data = load_json(file_name)
     
-    if data == None:
-        raise FileNotFoundError("JSON file not found error")
+    user = find_user_by_id(data, user_id)
 
-    user = next((u for u in data if u["user_id"] == user_id), None)
-    if user is None:
-        raise ValueError("User not found")
-
-
-    reviewer = next((u for u in data if u["user_id"] == reviewer_id), None)
-    if reviewer is None:
-        raise ValueError(f"Reviewer with id {reviewer_id} does not exist")
+    #Confirms that the reviewer exists
+    find_user_by_id(data, reviewer_id)
 
     if "follow_reviewers_id" not in user:
         user["follow_reviewers_id"] = []
@@ -110,13 +96,7 @@ def add_follow_reviewer(user_id: str, reviewer_id: str):
 def delete_follow_reviewer(user_id: str, reviewer_id: str):
     data = load_json(file_name)
     
-    if data == None:
-        raise FileNotFoundError("JSON file not found error")
-
-    user = next((u for u in data if u["user_id"] == user_id), None)
-    if user is None:
-        raise ValueError("User not found")
-
+    user = find_user_by_id(data, user_id)
 
     if "follow_reviewers_id" not in user:
         raise ValueError("User has no follow list")

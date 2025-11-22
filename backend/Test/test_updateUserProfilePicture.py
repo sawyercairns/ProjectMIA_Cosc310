@@ -75,8 +75,8 @@ def test_update_profile_image_user_not_found(mocker):
 def test_update_profile_image_file_not_found(mocker):
     """Test profile image update handles file not found error"""
     mock_load_json = mocker.patch("app.services.userInteractor.load_json")
-    mock_load_json.return_value = None
-    
+    mock_load_json.side_effect = FileNotFoundError("JSON file not found error")
+      
     response = client.put(
         "/login/image",
         json={

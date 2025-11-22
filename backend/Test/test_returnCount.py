@@ -3,20 +3,21 @@
 import pytest
 from app.schemas.userClass import User
 from app.services.returnCount import trackUserReturns
+from app.schemas.orderClass import Order
 
 
 
 def test_admin_returnCount(mocker):
-    user_id = "user101"
+    user_id = 9999999
 
     mock_get = mocker.patch(
-        "app.services.returnCount.pastOrdersInteractor.get_orders"
+        "app.services.returnCount.load_orders"
     )
 
     mock_get.return_value = [
-        {"order_id": 1, "returned": True},
-        {"order_id": 2, "returned": False},
-        {"order_id": 3, "returned": True},
+        Order(user_id=101, order_id=1, returned=True),  
+        Order(user_id=101, order_id=2, returned=False),
+        Order(user_id=101, order_id=3, returned=True),
     ]
 
     admin_user = User(
@@ -33,10 +34,10 @@ def test_admin_returnCount(mocker):
 
 
 def test_nonAdmin_returnCount(mocker):
-    user_id = "user101"
+    user_id = 9999999
 
     mocker.patch(
-        "app.services.returnCount.pastOrdersInteractor.get_orders",
+        "app.services.returnCount.load_orders",
         return_value=[]
     )
 
