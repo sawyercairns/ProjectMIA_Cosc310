@@ -44,3 +44,25 @@ def get_reviews(user_id: int = None, product_id: int = None):
                 review_list.append(review)                      
     return review_list
 
+def update_review(user_id: int, product_id: int, rating: float = None, title: str = None, body: str = None):
+    path = Path(__file__).resolve().parents[1] / "data" / "reviews.json"
+    with path.open("r", encoding="UTF-8") as f:
+        reviews = json.load(f)
+
+    review_found = False
+    for review in reviews:
+        if int(review["user_id"]) == user_id and int(review["product_id"]) == product_id:
+            if rating is not None:
+                review["rating"] = rating
+            if title is not None:
+                review["title"] = title
+            if body is not None:
+                review["body"] = body
+            review_found = True
+            break
+    
+    if not review_found:
+        raise ValueError("Review not found.")
+    
+    with path.open("w", encoding="UTF-8") as f:
+        json.dump(reviews, f, indent=2)
