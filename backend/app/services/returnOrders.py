@@ -4,6 +4,9 @@ import os
 from datetime import datetime, timedelta
 from app.services.orderInteractor import load_orders, save_orders
 
+# Configuration constants
+RETURN_WINDOW_DAYS = 30
+
 
 def check_if_order_exists(userid:str, orderid:int):
     # Deprecated: use check_if_order_exists_in_orders instead
@@ -16,7 +19,7 @@ def check_if_order_exists_in_orders(orders, orderid:int):
     return None
 def check_time_return_window(orderdate:str) -> bool:
     ordertime = datetime.fromisoformat(orderdate)
-    return ((datetime.now() - ordertime) <= timedelta(days=30))
+    return ((datetime.now() - ordertime) <= timedelta(days=RETURN_WINDOW_DAYS))
 
 
 def not_refunded(order) -> bool:
@@ -50,7 +53,7 @@ def process_return(userid:str, orderid:int):
 
 
     if not check_time_return_window(order.order_date):
-        print("Order exceeds 30 day return window")
+        print(f"Order exceeds {RETURN_WINDOW_DAYS} day return window")
         return False
    
     if not not_refunded(order):
