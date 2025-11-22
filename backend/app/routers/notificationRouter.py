@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from backend.app.services import notificationInteractor
+from app.services import notificationInteractor
 from typing import List
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
