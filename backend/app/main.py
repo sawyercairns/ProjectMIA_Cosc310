@@ -9,6 +9,7 @@ from app.routers.wishListRouter import router as wishList_router
 from app.routers.orderRouter import router as orders_router
 from app.routers.paymentRouter import router as payment_router
 from app.routers.reviewRouter import router as review_router
+from app.routers.notificationRouter import router as notification_router
 from app.services.productInteractor import get_products_filtered
 
 app = FastAPI()
@@ -58,3 +59,4 @@ app.include_router(wishList_router)
 app.include_router(orders_router)
 app.include_router(payment_router)
 app.include_router(review_router)
+app.include_router(notification_router)

@@ -2,7 +2,7 @@ import json
 import os
 from typing import List
 from pathlib import Path
-from backend.app.schemas.notificationClass import Notification
+from app.schemas.notificationClass import Notification
 
 """
 Notification interactor for managing user notifications.

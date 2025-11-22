@@ -1,4 +1,4 @@
-from backend.app.schemas.notificationClass import Notification
+from app.schemas.notificationClass import Notification
 
 
 class WishlistNotification(Notification):
