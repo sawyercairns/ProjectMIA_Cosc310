@@ -13,9 +13,7 @@ This file is the functions that the user can interact with.
 path = Path(__file__).resolve().parents[1] / "data" / "wishlist.json"
 
 def load_wishList(user_id: str) -> WishList:
-    if not os.path.exists(path):
-        raise FileNotFoundError("wishlist.json file not found")
-
+    
     data = load_json(path.name)
 
     user_wishList = data.get(user_id)
