@@ -1,3 +1,4 @@
+import pytest
 
 from datetime import date
 from app.schemas.reviewClass import Review
@@ -15,3 +16,16 @@ def test_create_and_remove_review():
     remove_review(int(r[0]["review_id"]))
     r = get_reviews(9151)
     assert len(r) == 0
+
+def test_create_duplicate_review():
+    rev = Review(0, 999999, 10, date.today(), 4, 50, "Test", "Test")
+    create_review(rev)
+   
+    rev2  = Review(0, 999999, 10, date.today(), 3, 30, "Test 2", "Test 2")
+    
+    with pytest.raises(ValueError):
+        create_review(rev2)
+
+    remove = get_reviews(999999)
+    for review in remove:
+        remove_review(int(review["review_id"]))
