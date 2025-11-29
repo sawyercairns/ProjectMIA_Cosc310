@@ -18,7 +18,9 @@ class Order:
                  address: Address = None,
                  order_date: str = None,
                  order_id: int = None,
-                 returned: bool = False): 
+                 returned: bool = False,
+                 is_gift: bool = False,
+                 gifter_id: int = None): 
        
         if order_id is None:
             from app.services.orderInteractor import get_next_order_id
@@ -33,6 +35,8 @@ class Order:
         self.order_date = order_date or datetime.now().isoformat()
         self._total_price = self.calculate_total_price()
         self._returned = returned
+        self._is_gift = is_gift
+        self._gifter_id = gifter_id
    
     #  -- order_id --
     @property
@@ -125,6 +129,25 @@ class Order:
             "address": self.address.to_dict() if self.address else None,
             "order_date": self.order_date,
             "total_price": str(self.total_price),
-            "returned": self.returned
+            "returned": self.returned,
+            "is_gift": self.is_gift,
+            "gifter_id": self.gifter_id
         }
+
+    # -- gift --
+    @property
+    def gifter_id(self):
+        return self._gifter_id
+    
+    @gifter_id.setter
+    def gifter_id(self, value: int):
+        self._gifter_id = value
+
+    @property
+    def is_gift(self):
+        return self._is_gift
+
+    @is_gift.setter
+    def is_gift(self, value: bool):
+        self._is_gift = value
 

@@ -67,7 +67,9 @@ def load_orders(user_id: str) -> List[Order]:
             order_items=items,
             address=address,
             order_date=order_data["order_date"],
-            returned=order_data.get("returned", False)
+            returned=order_data.get("returned", False),
+            is_gift=order_data.get("is_gift", False),  
+            gifter_id=order_data.get("gifter_id")  
         )
 
         orders.append(order)
@@ -144,14 +146,16 @@ def get_order_by_id(order_id: int, user_id: str = None) -> Order:
             country=addr_data["country"]
         )
 
-    return Order(
-        order_id=order_data["order_id"],
-        user_id=order_data["user_id"],
-        order_items=items,
-        address=address,
-        order_date=order_data["order_date"],
-        returned=order_data.get("returned", False)
-    )
+    order = Order(
+            order_id=order_data["order_id"],
+            user_id=order_data["user_id"],
+            order_items=items,
+            address=address,
+            order_date=order_data["order_date"],
+            returned=order_data.get("returned", False),
+            is_gift=order_data.get("is_gift", False),  
+            gifter_id=order_data.get("gifter_id")  
+        )
 
 
 def get_next_order_id() -> int:

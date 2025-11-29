@@ -119,3 +119,22 @@ def delete_follow_reviewer(user_id: str, reviewer_id: str):
         raise ValueError(f"Reviewer {reviewer_id} not found in follow list")
     
     write_to_json(file_name, data)
+
+def get_eligible_gift_recipients(gifter_id: str) -> list[User]:
+    """
+    Get a list of users eligible to receive gifts from the specified gifter.
+    Excludes the gifter themselves.
+    """
+    data = load_json(file_name)
+    eligible_recipients = []
+
+    for user in data:
+        if user["user_id"] != gifter_id and user.get("is_admin") == False:
+            eligible_recipients.append({
+                "user_id": user["user_id"],
+                "first_name": user["first_name"],
+                "last_name": user["last_name"],
+                "email": user["email"]
+            })
+    
+    return eligible_recipients

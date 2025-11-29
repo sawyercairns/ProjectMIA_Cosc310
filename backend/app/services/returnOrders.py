@@ -50,6 +50,10 @@ def process_return(userid:str, orderid:int):
     if not order:
         print("Order not found.")
         return False
+    
+    if order.is_gift:
+        print("Gift orders are non-refundable.")
+        return False
 
 
     if not check_time_return_window(order.order_date):
