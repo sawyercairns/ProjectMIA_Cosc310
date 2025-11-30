@@ -6,6 +6,11 @@ from pathlib import Path
 from app.services.Interactor import load_json, write_to_json
 orders_path = Path(__file__).resolve().parents[1] / "data" / "pastOrders.json"
 
+def get_orders_all():
+    data = load_json("orders.json")
+
+    return data
+
 def get_orders(user_id:str):
     
     data = load_json(orders_path.name)
