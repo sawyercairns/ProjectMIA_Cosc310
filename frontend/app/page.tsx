@@ -7,6 +7,7 @@ export default async function Home({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
    const items = await fetchProducts((await searchParams).query);
+   const popular_items = await fetchPopular();
   return (
     <div>
       <h1>ProjectMIA Online Shop</h1>
@@ -16,6 +17,19 @@ export default async function Home({
         <input name="query"  placeholder="Enter product name..."/>
         <button type="submit">Submit</button>
       </Form>
+
+
+      <br></br><br></br>
+
+      <h1>Popular Items: </h1>
+      {popular_items.map(pop_item => (
+          <li key={pop_item._product_name}>
+          <strong>{ pop_item._product_name }</strong><br></br>
+            <hr></hr>
+          </li>
+        ))}
+
+      <br></br><br></br>
       <ul>
         {items.map(item => (
           <li key={item._product_id}>
@@ -50,6 +64,16 @@ async function fetchProducts(keyword:any){
   try {
     if(keyword == null) keyword = ""
     const response = await fetch('http://localhost:8000/products?keyword=' + keyword);
+    const data = await response.json();
+    return data
+  } catch (error) {
+    console.error("Error fetching item:", error);
+  }
+}
+
+async function fetchPopular(){
+  try {
+    const response = await fetch('http://localhost:8000/products/popularProducts');
     const data = await response.json();
     return data
   } catch (error) {

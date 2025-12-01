@@ -7,6 +7,7 @@ import pytest
 from app.services import returnOrders
 from app.services.orderInteractor import path, save_orders, load_orders
 from app.schemas.orderClass import Order
+from app.services.Interactor import write_to_json
 
 def test_return():
     user_id = 99999999
@@ -46,4 +47,6 @@ def test_return():
     # Remove the temporary order
     cleaned_orders = [o for o in updated_orders if o.order_id != temp_order_id]
     save_orders(str(user_id), cleaned_orders)
+
+    write_to_json("orders.json", data)
      
