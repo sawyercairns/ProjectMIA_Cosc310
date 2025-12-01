@@ -38,8 +38,8 @@ class Payment:
         if not CVV.isdigit():
             raise ValueError("CVV must contain only digits.")
         
-        if len(card_number) is not 16:
-            raise ValueError("Card number length must be 16.")
+        if len(card_number) < 13 or len(card_number) > 19:
+            raise ValueError("Card number must be between 13 and 19 digits.")
         
         if len(CVV) not in [3, 4]:
             raise ValueError("CVV must be 3 or 4 digits.")
