@@ -1,58 +1,117 @@
 import Form from 'next/form'
-
+import LoginButton from './components/LoginButton'
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-   const items = await fetchProducts((await searchParams).query);
+  const params = await searchParams
+  const search = (params.query as string) || ''
+  const page = parseInt((params.page as string) || '1')
+  
+  const result = await fetchProductsWithPagination(search, page)
+  const { products, displayedCount, totalMatches, currentPage, totalPages, hasPrevious, hasNext } = result
+
   return (
     <div>
       <h1>ProjectMIA Online Shop</h1>
     
-      <a href="/">🏠 Home</a>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px' }}>
+        <a href="/">🏠 Home</a>
+        <LoginButton />
+      </div>
+
       <Form action="/">
-        <input name="query"  placeholder="Enter product name..."/>
-        <button type="submit">Submit</button>
+        <label htmlFor="search">Search products:</label>
+        <input 
+          id="search" 
+          name="query" 
+          defaultValue={search}
+          placeholder="Enter product name..."
+        />
+        <button type="submit">Search</button>
       </Form>
+
+      <p>Showing {displayedCount} out of {totalMatches} products (Page {currentPage} of {totalPages})</p>
+
+      <div style={{ marginBottom: '10px' }}>
+        {hasPrevious ? (
+          <a href={`/?query=${search}&page=${currentPage - 1}`}>← Previous</a>
+        ) : (
+          <span style={{ color: '#999' }}>← Previous</span>
+        )}
+        {' | '}
+        {hasNext ? (
+          <a href={`/?query=${search}&page=${currentPage + 1}`}>Next →</a>
+        ) : (
+          <span style={{ color: '#999' }}>Next →</span>
+        )}
+      </div>
+
       <ul>
-        {items.map(item => (
+        {products.map((item: any) => (
           <li key={item._product_id}>
-          <strong>{ item._product_name }</strong><br></br>
-          {item._product_desc}<br></br>
-          Price: ${ item._price }<br></br>
-          Rating: { item._rating } ({ item._rating_count } reviews)<br></br>
-          Units sold: { item._units_sold }
-            <hr></hr>
+            <strong>{item._product_name}</strong><br />
+            {item._product_desc}<br />
+            Price: ${item._price.toFixed(2)}<br />
+            Rating: {item._rating.toFixed(1)} ({item._rating_count} reviews)<br />
+            Units sold: {item._units_sold}
+            <hr />
           </li>
         ))}
       </ul>
-        
+
+      <div style={{ marginTop: '10px' }}>
+        {hasPrevious ? (
+          <a href={`/?query=${search}&page=${currentPage - 1}`}>← Previous</a>
+        ) : (
+          <span style={{ color: '#999' }}>← Previous</span>
+        )}
+        {' | '}
+        {hasNext ? (
+          <a href={`/?query=${search}&page=${currentPage + 1}`}>Next →</a>
+        ) : (
+          <span style={{ color: '#999' }}>Next →</span>
+        )}
+      </div>
     </div> 
   );
 }
 
-
-async function fetchBrowsingPage(search:any, page:any) {
+async function fetchProductsWithPagination(search: string, page: number) {
   try {
-    if (search == null) search = ''
-    if (page == null) page = '1'
-    const response = await fetch('http://localhost:8000/?search=' + search +'&page=' + page);
-    const data = await response.text();
-    return data
+    const keyword = search || ''
+    const response = await fetch(`http://localhost:8000/products?keyword=${keyword}`)
+    const allProducts = await response.json()
+    
+    const itemsPerPage = 50
+    const startIndex = (page - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    
+    const products = allProducts.slice(startIndex, endIndex)
+    const totalMatches = allProducts.length
+    const totalPages = Math.ceil(totalMatches / itemsPerPage)
+    
+    return {
+      products,
+      displayedCount: products.length,
+      totalMatches,
+      currentPage: page,
+      totalPages: totalPages || 1,
+      hasPrevious: page > 1,
+      hasNext: page < totalPages
+    }
   } catch (error) {
-    console.error("Error fetching item:", error);
-  }
-}
-
-async function fetchProducts(keyword:any){
-  try {
-    if(keyword == null) keyword = ""
-    const response = await fetch('http://localhost:8000/products?keyword=' + keyword);
-    const data = await response.json();
-    return data
-  } catch (error) {
-    console.error("Error fetching item:", error);
+    console.error("Error fetching products:", error)
+    return {
+      products: [],
+      displayedCount: 0,
+      totalMatches: 0,
+      currentPage: 1,
+      totalPages: 1,
+      hasPrevious: false,
+      hasNext: false
+    }
   }
 }
