@@ -12,6 +12,7 @@ export default async function Home({
   
   const result = await fetchProductsWithPagination(search, page)
   const { products, displayedCount, totalMatches, currentPage, totalPages, hasPrevious, hasNext } = result
+  const popular_items = await fetchPopular()
 
   return (
     <div>
@@ -32,6 +33,18 @@ export default async function Home({
         />
         <button type="submit">Search</button>
       </Form>
+
+      <br></br><br></br>
+
+      <h1>Popular Items: </h1>
+      {popular_items.map((pop_item: any) => (
+          <li key={pop_item._product_name}>
+          <strong>{ pop_item._product_name }</strong><br></br>
+            <hr></hr>
+          </li>
+        ))}
+
+      <br></br><br></br>
 
       <p>Showing {displayedCount} out of {totalMatches} products (Page {currentPage} of {totalPages})</p>
 
@@ -113,5 +126,15 @@ async function fetchProductsWithPagination(search: string, page: number) {
       hasPrevious: false,
       hasNext: false
     }
+  }
+}
+
+async function fetchPopular(){
+  try {
+    const response = await fetch('http://localhost:8000/products/popularProducts');
+    const data = await response.json();
+    return data
+  } catch (error) {
+    console.error("Error fetching item:", error);
   }
 }

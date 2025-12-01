@@ -5,12 +5,17 @@ import json
 from app.services import productInteractor
 from app.services.userInteractor import authenticate_admin
 from app.schemas.userClass import User
+from app.services.popularProducts import get_popular_products
 
 router = APIRouter(prefix="/products", tags=["products"])
 
 @router.get("", response_model=None)
 def get_products(category: str = "", keyword:str = "", maxPrice: float = 1000000):
     return productInteractor.get_products_filtered(category, keyword, maxPrice)
+
+@router.get("/popularProducts", response_model = None)
+def get_popular():
+    return get_popular_products()
 
 @router.post("", response_model=None, status_code=201)
 def create_product(email:str, password:str, product_name:str, description:str, price:float):
