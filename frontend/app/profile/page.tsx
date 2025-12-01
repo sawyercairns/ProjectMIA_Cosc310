@@ -16,6 +16,12 @@ export default function ProfilePage() {
   // Image update form
   const [imageUrl, setImageUrl] = useState('')
   const [imageMessage, setImageMessage] = useState('')
+  
+  // Payment update form
+  const [cardNumber, setCardNumber] = useState('')
+  const [cvv, setCvv] = useState('')
+  const [expirationDate, setExpirationDate] = useState('')
+  const [paymentMessage, setPaymentMessage] = useState('')
 
   const DEFAULT_IMAGE = '/defaultUser.png'
 
@@ -113,6 +119,37 @@ export default function ProfilePage() {
     }
   }
 
+  const handlePaymentUpdate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setPaymentMessage('')
+
+    try {
+      const response = await fetch('http://localhost:8000/payment', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.user_id,
+          card_number: cardNumber,
+          CVV: cvv,
+          expiration_date: expirationDate
+        })
+      })
+
+      const data = await response.json()
+      
+      if (response.ok) {
+        setPaymentMessage('Payment information updated successfully!')
+        setCardNumber('')
+        setCvv('')
+        setExpirationDate('')
+      } else {
+        setPaymentMessage(data.detail || 'Failed to update payment information')
+      }
+    } catch (error) {
+      setPaymentMessage('Error connecting to server')
+    }
+  }
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -189,6 +226,60 @@ export default function ProfilePage() {
             
             <button type="submit" style={{ padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
               Update Image
+            </button>
+          </form>
+        </div>
+
+        {/* Update Payment Information */}
+        <div style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
+          <h3>Update Payment Information</h3>
+          <form onSubmit={handlePaymentUpdate}>
+            <div style={{ marginBottom: '10px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', color: '#000' }}>Card Number</label>
+              <input 
+                type="text"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+                placeholder="1234567890123456"
+                maxLength={16}
+                style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px', color: '#000' }}
+                required
+              />
+            </div>
+            
+            <div style={{ marginBottom: '10px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', color: '#000' }}>CVV</label>
+              <input 
+                type="text"
+                value={cvv}
+                onChange={(e) => setCvv(e.target.value)}
+                placeholder="123"
+                maxLength={4}
+                style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px', color: '#000' }}
+                required
+              />
+            </div>
+            
+            <div style={{ marginBottom: '10px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', color: '#000' }}>Expiration Date</label>
+              <input 
+                type="text"
+                value={expirationDate}
+                onChange={(e) => setExpirationDate(e.target.value)}
+                placeholder="MM/YY"
+                style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px', color: '#000' }}
+                required
+              />
+            </div>
+            
+            {paymentMessage && (
+              <div style={{ color: paymentMessage.includes('success') ? 'green' : 'red', marginBottom: '10px', fontSize: '14px' }}>
+                {paymentMessage}
+              </div>
+            )}
+            
+            <button type="submit" style={{ padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+              Update Payment
             </button>
           </form>
         </div>
