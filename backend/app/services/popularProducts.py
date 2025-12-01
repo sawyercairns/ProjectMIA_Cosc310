@@ -6,7 +6,6 @@ def get_popular_products():
     orders = get_orders_all()
     ordered_products = {}
     for order in orders:
-        print(order)
         if orders[order]["order_date"] > datetime.now() - timedelta(weeks = 1):
             for item in orders[order]["order_items"]:
                 if item.product_name not in ordered_products:
