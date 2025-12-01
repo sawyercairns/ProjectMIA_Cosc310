@@ -5,13 +5,6 @@ from app.services.Interactor import load_json
 
 router = APIRouter(prefix="/login", tags=["login"])
 
-@router.get("/users", response_model=None)
-def get_all_users():
-    try:
-        users = load_json("users.json")
-        return users
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 #TODO: Probably at some point we will want to change these responses, 
 # just remember to change the tests in test_validationRouter if we do
@@ -22,6 +15,15 @@ def user_validation(email:str, password:str):
         return "VALID USER"
     else:
         return "INVALID USERNAME OR PASSWORD"
+    
+# Used by the profile page. And matches email address to current logged in user. 
+@router.get("/users", response_model=None)
+def get_all_users():
+    try:
+        users = load_json("users.json")
+        return users
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("{user_id}")
 def delete_user(user_id: str, email:str, password: str):
