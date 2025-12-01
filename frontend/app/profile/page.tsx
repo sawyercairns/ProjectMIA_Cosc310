@@ -241,7 +241,7 @@ export default function ProfilePage() {
                 value={cardNumber}
                 onChange={(e) => setCardNumber(e.target.value)}
                 placeholder="1234567890123456"
-                maxLength={16}
+                maxLength={19}
                 style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px', color: '#000' }}
                 required
               />
