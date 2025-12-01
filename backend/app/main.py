@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
 from app.routers.productRouter import router as products_router
@@ -13,6 +14,15 @@ from app.routers.notificationRouter import router as notification_router
 from app.services.productInteractor import get_products_filtered
 
 app = FastAPI()
+
+# This is so that the backend can talk with the frontend port
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],  # Frontend URLs
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent / "templates"))
 
