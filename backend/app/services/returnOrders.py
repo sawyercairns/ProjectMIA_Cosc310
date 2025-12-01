@@ -8,10 +8,6 @@ from app.services.orderInteractor import load_orders, save_orders
 RETURN_WINDOW_DAYS = 30
 
 
-def check_if_order_exists(userid:str, orderid:int):
-    # Deprecated: use check_if_order_exists_in_orders instead
-    raise NotImplementedError("Use check_if_order_exists_in_orders with orders param")
-
 def check_if_order_exists_in_orders(orders, orderid:int):
     for order in orders:
         if order.order_id == orderid:
