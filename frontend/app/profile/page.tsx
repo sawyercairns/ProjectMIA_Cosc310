@@ -184,6 +184,13 @@ export default function ProfilePage() {
 
       {/* Profile Content */}
       <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', color: "black" }}>
+        {/* Navigation Buttons */}
+        <div style={{ marginBottom: '20px' , backgroundColor: 'white'}}>
+          <a href="/wishlist">⭐ My Wishlist</a>
+          <span style={{ margin: '0 10px' }}>|</span>
+          <a href="/reviews">📝 My Reviews</a>
+        </div>
+
         {/* Profile Info */}
         <div style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
           <h2>{user.first_name} {user.last_name}</h2>
