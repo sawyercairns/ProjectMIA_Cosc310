@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from app.services.pastOrdersInteractor import get_orders_all
+from app.services.orderInteractor import get_orders_all
 
 #Returns the top 3 products by sales in a given week
 def get_popular_products():
