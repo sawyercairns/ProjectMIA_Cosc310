@@ -1,8 +1,17 @@
 from fastapi import APIRouter, HTTPException, Body
 from app.schemas.userClass import User
 from app.services.userInteractor import get_user, remove_user, add_user, update_password, update_image_url, update_image_url ,add_follow_reviewer, delete_follow_reviewer, authenticate_admin
+from app.services.Interactor import load_json
 
 router = APIRouter(prefix="/login", tags=["login"])
+
+@router.get("/users", response_model=None)
+def get_all_users():
+    try:
+        users = load_json("users.json")
+        return users
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #TODO: Probably at some point we will want to change these responses, 
 # just remember to change the tests in test_validationRouter if we do
