@@ -128,7 +128,9 @@ export default function AdminPage() {
         .filter((u: any) => !u.is_admin)
         .filter((u: any) => {
             const fullName = `${u.first_name} ${u.last_name}`.toLowerCase()
-            return fullName.includes(searchName.toLowerCase())
+            const userId = u.user_id.toString().toLowerCase()
+            const searchTerm = searchName.toLowerCase()
+            return fullName.includes(searchTerm) || userId.includes(searchTerm)
         })
 
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage)
@@ -156,7 +158,7 @@ export default function AdminPage() {
                 <div>
                     <h2>All Users</h2>
                     
-                    <label htmlFor="search">Search by name:</label>
+                    <label htmlFor="search">Search by name or ID:</label>
                     <input
                         id="search"
                         type="text"
@@ -165,7 +167,7 @@ export default function AdminPage() {
                             setSearchName(e.target.value)
                             setCurrentPage(1)
                         }}
-                        placeholder="Enter name..."
+                        placeholder="Enter name or ID..."
                     />
                     
                     <br /><br />
