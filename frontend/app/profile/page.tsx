@@ -186,9 +186,15 @@ export default function ProfilePage() {
       <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', color: "black" }}>
         {/* Navigation Buttons */}
         <div style={{ marginBottom: '20px' , backgroundColor: 'white'}}>
-          <a href="/wishlist">⭐ My Wishlist</a>
-          <span style={{ margin: '0 10px' }}>|</span>
-          <a href="/reviews">📝 My Reviews</a>
+          {user.is_admin ? (
+            <a href="/admin">👑 Admin Page</a>
+          ) : (
+            <>
+              <a href="/wishlist">⭐ My Wishlist</a>
+              <span style={{ margin: '0 10px' }}>|</span>
+              <a href="/reviews">📝 My Reviews</a>
+            </>
+          )}
         </div>
 
         {/* Profile Info */}
@@ -238,6 +244,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Update Payment Information */}
+        {user.is_admin ? null : (
         <div style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
           <h3>Update Payment Information</h3>
           <form onSubmit={handlePaymentUpdate}>
@@ -290,6 +297,7 @@ export default function ProfilePage() {
             </button>
           </form>
         </div>
+        )}
 
         {/* Update Password */}
         <div style={{ backgroundColor: 'white', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
