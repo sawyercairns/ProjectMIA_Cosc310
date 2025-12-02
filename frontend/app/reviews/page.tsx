@@ -38,14 +38,36 @@ export default function ReviewsPage() {
 
   const fetchUserReviews = async (userId: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/review`)
+      const response = await fetch(`http://localhost:8000/reviews/${userId}`)
       if (!response.ok) {
         setLoading(false)
         return
       }
-      const allReviews = await response.json()
-      const userReviews = allReviews.filter((r: any) => r.user_id === userId)
-      setReviews(userReviews)
+      const userReviews = await response.json()
+      
+      // Fetch product details for each review
+      const reviewsWithProducts = await Promise.all(
+        userReviews.map(async (review: any) => {
+          try {
+            const productResponse = await fetch(`http://localhost:8000/products/${review.product_id}`)
+            if (productResponse.ok) {
+              const product = await productResponse.json()
+              return {
+                ...review,
+                product_name: product.product_name
+              }
+            }
+          } catch (error) {
+            console.error(`Error fetching product ${review.product_id}:`, error)
+          }
+          return {
+            ...review,
+            product_name: 'Unknown Product'
+          }
+        })
+      )
+      
+      setReviews(reviewsWithProducts)
     } catch (error) {
       console.error("Error fetching reviews:", error)
     } finally {
@@ -109,17 +131,23 @@ export default function ReviewsPage() {
           reviews.map((review) => (
             <div key={review.review_id} style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
               <div style={{ marginBottom: '10px' }}>
-                <strong>Product ID:</strong> {review.product_id}
+                <strong>Name:</strong> {review.product_name}
               </div>
               <div style={{ marginBottom: '10px' }}>
-                <strong>Rating:</strong> {'⭐'.repeat(review.rating)} ({review.rating}/5)
+                <strong>Rating:</strong> {'⭐'.repeat(Math.floor(review.rating))} ({review.rating}/5)
+              </div>
+              <div style={{ marginBottom: '10px' }}>
+                <strong>Title:</strong> {review.title}
               </div>
               <div style={{ marginBottom: '10px' }}>
                 <strong>Review:</strong>
-                <p style={{ marginTop: '5px' }}>{review.review_text}</p>
+                <p style={{ marginTop: '5px' }}>{review.body}</p>
+              </div>
+              <div style={{ marginBottom: '10px' }}>
+                <strong>Likes:</strong> 👍 {review.likes}
               </div>
               <div style={{ fontSize: '12px', color: '#666' }}>
-                <strong>Date:</strong> {new Date(review.review_date).toLocaleDateString()}
+                <strong>Date:</strong> {new Date(review.created_at).toLocaleDateString()}
               </div>
             </div>
           ))
