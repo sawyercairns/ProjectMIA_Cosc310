@@ -17,6 +17,10 @@ def get_products(category: str = "", keyword:str = "", maxPrice: float = 1000000
 def get_popular():
     return get_popular_products()
 
+@router.get("/{product_id}", response_model=None)
+def get_product_by_id(product_id: int):
+    return productInteractor.get_product(product_id)
+
 @router.post("", response_model=None, status_code=201)
 def create_product(email:str, password:str, product_name:str, description:str, price:float):
     authenticate_admin(email, password)

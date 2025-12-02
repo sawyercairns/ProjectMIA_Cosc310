@@ -38,13 +38,47 @@ export default function WishlistPage() {
 
   const fetchWishlist = async (userId: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/wishlist/${userId}`)
+      const response = await fetch(`http://localhost:8000/wishlist?user_id=${userId}`)
       if (!response.ok) {
+        console.error("Failed to fetch wishlist, status:", response.status)
         setLoading(false)
         return
       }
       const wishlist = await response.json()
-      setWishlistItems(wishlist.items || [])
+      console.log("Wishlist response:", wishlist)
+      console.log("Wishlist items:", wishlist.entries)
+      
+      // Fetch product details for each wishlist item
+      const itemsWithDetails = await Promise.all(
+        (wishlist.entries || []).map(async (entry: any) => {
+          try {
+            console.log(`Fetching product ${entry.product_id}...`)
+            const productResponse = await fetch(`http://localhost:8000/products/${entry.product_id}`)
+            console.log(`Product ${entry.product_id} response status:`, productResponse.status)
+            if (productResponse.ok) {
+              const product = await productResponse.json()
+              console.log(`Product ${entry.product_id} data:`, product)
+              return {
+                product_id: entry.product_id,
+                date_added: entry.date_added,
+                product_name: product.product_name,
+                price: product.actual_price
+              }
+            }
+          } catch (error) {
+            console.error(`Error fetching product ${entry.product_id}:`, error)
+          }
+          return {
+            product_id: entry.product_id,
+            date_added: entry.date_added,
+            product_name: 'N/A',
+            price: 'N/A'
+          }
+        })
+      )
+      
+      console.log("Final items with details:", itemsWithDetails)
+      setWishlistItems(itemsWithDetails)
     } catch (error) {
       console.error("Error fetching wishlist:", error)
     } finally {
@@ -54,7 +88,7 @@ export default function WishlistPage() {
 
   const removeFromWishlist = async (productId: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/wishlist/${user.user_id}/item/${productId}`, {
+      const response = await fetch(`http://localhost:8000/wishlist/users/${user.user_id}/items/${productId}`, {
         method: 'DELETE'
       })
 
@@ -134,7 +168,7 @@ export default function WishlistPage() {
                     <strong>Price:</strong> ${item.price || 'N/A'}
                   </div>
                   <div style={{ fontSize: '12px', color: '#666' }}>
-                    <strong>Added:</strong> {item.added_date ? new Date(item.added_date).toLocaleDateString() : 'N/A'}
+                    <strong>Added:</strong> {item.date_added ? new Date(item.date_added).toLocaleDateString() : 'N/A'}
                   </div>
                 </div>
                 <button 

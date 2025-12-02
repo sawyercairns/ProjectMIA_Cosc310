@@ -24,7 +24,25 @@ def create_product(p: Product):
 def remove_product(id:int):
     remove_item("products.json", "product_id", id)
 
-#Takes all filters, returns a List of Product which match those filters
+def get_product(product_id: int):
+    """Get a single product by its ID"""
+    products = _get_all_products()
+    for product in products:
+        if int(product["product_id"]) == product_id:
+            return {
+                "product_id": product["product_id"],
+                "product_name": product["product_name"],
+                "product_desc": product.get("product_desc", ""),
+                "actual_price": product.get("price", 0),
+                "discount_price": product.get("discount_price", 0),
+                "discount_percent": product.get("discount_percent", 0),
+                "rating": product.get("rating", 0),
+                "rating_count": product.get("rating_count", 0),
+                "units_sold": product.get("units_sold", 0)
+            }
+    return None
+
+
 def get_products_filtered(category:str = "", keywords:str = "", max_price:float = 100000):
     products = _get_all_products()
     productList = list()
