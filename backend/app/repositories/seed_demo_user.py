@@ -17,14 +17,14 @@ def seed_demo_user():
     }
     
     users_path = data_path / "users.json"
-    with open(users_path, "r") as f:
+    with open(users_path, "r", encoding="utf-8") as f:
         users = json.load(f)
     
     users = [u for u in users if u.get("user_id") != "1"]
     users.insert(0, demo_user)
     
-    with open(users_path, "w") as f:
-        json.dump(users, f, indent=2)
+    with open(users_path, "w", encoding="utf-8") as f:
+        json.dump(users, f, indent=2, ensure_ascii=False)
     
     print("Demo user created")
 
@@ -130,20 +130,20 @@ def seed_demo_orders():
     ]
     
     orders_path = data_path / "orders.json"
-    with open(orders_path, "r") as f:
+    with open(orders_path, "r", encoding="utf-8") as f:
         orders = json.load(f)
     
     orders["1"] = demo_orders
     
-    with open(orders_path, "w") as f:
-        json.dump(orders, f, indent=2)
+    with open(orders_path, "w", encoding="utf-8") as f:
+        json.dump(orders, f, indent=2, ensure_ascii=False)
     
     print(f"Created {len(demo_orders)} orders for demo user")
 
 
 def seed_demo_reviews():
     reviews_path = data_path / "reviews.json"
-    with open(reviews_path, "r") as f:
+    with open(reviews_path, "r", encoding="utf-8") as f:
         reviews = json.load(f)
     
     max_id = max(int(r.get("review_id", 0)) for r in reviews) if reviews else 0
@@ -205,8 +205,8 @@ def seed_demo_reviews():
     reviews = [r for r in reviews if r.get("user_id") != "1"]
     reviews = demo_reviews + reviews
     
-    with open(reviews_path, "w") as f:
-        json.dump(reviews, f, indent=2)
+    with open(reviews_path, "w", encoding="utf-8") as f:
+        json.dump(reviews, f, indent=2, ensure_ascii=False)
     
     print(f"Created {len(demo_reviews)} reviews for demo user")
 
@@ -221,13 +221,13 @@ def seed_demo_wishlist():
     }
     
     wishlist_path = data_path / "wishlist.json"
-    with open(wishlist_path, "r") as f:
+    with open(wishlist_path, "r", encoding="utf-8") as f:
         wishlist = json.load(f)
     
     wishlist["1"] = demo_wishlist
     
-    with open(wishlist_path, "w") as f:
-        json.dump(wishlist, f, indent=2)
+    with open(wishlist_path, "w", encoding="utf-8") as f:
+        json.dump(wishlist, f, indent=2, ensure_ascii=False)
     
     print(f"Created wishlist with {len(demo_wishlist['entries'])} items for demo user")
 
