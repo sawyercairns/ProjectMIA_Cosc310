@@ -23,6 +23,11 @@ export default function ProfilePage() {
   const [expirationDate, setExpirationDate] = useState('')
   const [paymentMessage, setPaymentMessage] = useState('')
 
+  // Year in Review
+  const [yearSummaryExpanded, setYearSummaryExpanded] = useState(false)
+  const [yearSummary, setYearSummary] = useState<any>(null)
+  const [yearSummaryLoading, setYearSummaryLoading] = useState(false)
+
   const DEFAULT_IMAGE = '/defaultUser.png'
 
   useEffect(() => {
@@ -150,6 +155,30 @@ export default function ProfilePage() {
     }
   }
 
+  const fetchYearSummary = async () => {
+    if (!user) return
+    setYearSummaryLoading(true)
+    try {
+      const currentYear = new Date().getFullYear()
+      const response = await fetch(`http://localhost:8000/summary/${user.user_id}/year/${currentYear}`)
+      if (response.ok) {
+        const data = await response.json()
+        setYearSummary(data)
+      }
+    } catch (error) {
+      console.error("Error fetching year summary:", error)
+    } finally {
+      setYearSummaryLoading(false)
+    }
+  }
+
+  const toggleYearSummary = () => {
+    if (!yearSummaryExpanded && !yearSummary) {
+      fetchYearSummary()
+    }
+    setYearSummaryExpanded(!yearSummaryExpanded)
+  }
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -171,7 +200,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       {/* Header */}
       <header>
         <div>
@@ -214,6 +243,64 @@ export default function ProfilePage() {
             />
           </div>
         </div>
+
+        {/* Year in Review */}
+        {!user.is_admin && (
+        <div style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
+          <div 
+            onClick={toggleYearSummary}
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+          >
+            <h3 style={{ margin: 0 }}>📊 {new Date().getFullYear()} Year in Review</h3>
+            <span style={{ fontSize: '20px' }}>{yearSummaryExpanded ? '▶' : '▲'}</span>
+          </div>
+          
+          {yearSummaryExpanded && (
+            <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #eee' }}>
+              {yearSummaryLoading ? (
+                <p>Loading your year summary...</p>
+              ) : yearSummary ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px' }}>
+                  <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#28a745' }}>${yearSummary.total_spent}</div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Total Spent</div>
+                  </div>
+                  <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#007bff' }}>{yearSummary.total_orders}</div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Orders Placed</div>
+                  </div>
+                  <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#17a2b8' }}>{yearSummary.items_purchased}</div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Items Purchased</div>
+                  </div>
+                  <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ffc107' }}>{yearSummary.reviews_written}</div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Reviews Written</div>
+                  </div>
+                  <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#e83e8c' }}>👍 {yearSummary.likes_received}</div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Likes Received</div>
+                  </div>
+                  <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#6f42c1' }}>${yearSummary.biggest_order}</div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Biggest Order</div>
+                  </div>
+                  <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#20c997' }}>${yearSummary.avg_order_amount}</div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Avg Order Amount</div>
+                  </div>
+                  <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#dc3545' }}>{yearSummary.orders_returned}</div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Orders Returned</div>
+                  </div>
+                </div>
+              ) : (
+                <p>No activity this year yet.</p>
+              )}
+            </div>
+          )}
+        </div>
+        )}
 
         {/* Update Profile Image */}
         <div style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>

@@ -67,6 +67,11 @@ def _save_cart(cart: Cart):
 
 def add_item(user_id: str, order_item: OrderItem):
     cart = load_cart(user_id)
+    
+    for existing_item in cart._cart_items:
+        if existing_item._product_id == order_item._product_id:
+            raise ValueError(f"Product {order_item._product_id} is already in the cart")
+    
     cart._cart_items.append(order_item)
     cart._cart_value += order_item._price * order_item._quantity
     _save_cart(cart)

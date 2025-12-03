@@ -100,6 +100,49 @@ export default function WishlistPage() {
     }
   }
 
+  const addToCart = async (item: any) => {
+    const quantity = prompt('Enter quantity:', '1')
+    if (!quantity || parseInt(quantity) <= 0) return
+
+    try {
+      // Get full product details
+      const productResponse = await fetch(`http://localhost:8000/products/${item.product_id}`)
+      if (!productResponse.ok) {
+        alert('Failed to fetch product details')
+        return
+      }
+      const product = await productResponse.json()
+
+      // Add to cart
+      const response = await fetch(`http://localhost:8000/cart/cart/items`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.user_id,
+          product_id: parseInt(item.product_id),
+          product_name: product.product_name,
+          product_desc: product.product_desc,
+          price: product.actual_price,
+          quantity: parseInt(quantity)
+        })
+      })
+
+      if (response.ok) {
+        // Remove from wishlist after successfully adding to cart
+        await removeFromWishlist(item.product_id)
+        alert('Item added to cart and removed from wishlist!')
+      } else {
+        const errorData = await response.json()
+        alert(errorData.detail || 'Failed to add item to cart')
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error)
+      alert('Error adding to cart')
+    }
+  }
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -110,7 +153,7 @@ export default function WishlistPage() {
         <header>
           <div>
             <h1>My Wishlist</h1>
-            <a href="/">Home</a>
+            <a href="/">🏠 Home</a>
           </div>
         </header>
         <div>
@@ -121,7 +164,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       {/* Header */}
       <header>
         <div>
@@ -171,19 +214,34 @@ export default function WishlistPage() {
                     <strong>Added:</strong> {item.date_added ? new Date(item.date_added).toLocaleDateString() : 'N/A'}
                   </div>
                 </div>
-                <button 
-                  onClick={() => removeFromWishlist(item.product_id)}
-                  style={{ 
-                    padding: '8px 16px', 
-                    backgroundColor: '#dc3545', 
-                    color: 'white', 
-                    border: 'none', 
-                    borderRadius: '4px', 
-                    cursor: 'pointer' 
-                  }}
-                >
-                  Remove
-                </button>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <button 
+                    onClick={() => removeFromWishlist(item.product_id)}
+                    style={{ 
+                      padding: '8px 16px', 
+                      backgroundColor: '#FF0000', 
+                      color: 'white', 
+                      border: 'none', 
+                      borderRadius: '4px', 
+                      cursor: 'pointer' 
+                    }}
+                  >
+                    Remove
+                  </button>
+                  <button 
+                    onClick={() => addToCart(item)}
+                    style={{ 
+                      padding: '8px 16px', 
+                      backgroundColor: '#00FF00', 
+                      color: 'white', 
+                      border: 'none', 
+                      borderRadius: '4px', 
+                      cursor: 'pointer' 
+                    }}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
               </div>
             </div>
           ))
