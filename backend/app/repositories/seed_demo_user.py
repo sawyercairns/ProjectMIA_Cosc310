@@ -146,12 +146,14 @@ def seed_demo_reviews():
     with open(reviews_path, "r", encoding="utf-8") as f:
         reviews = json.load(f)
     
-    max_id = max(int(r.get("review_id", 0)) for r in reviews) if reviews else 0
-    next_id = max_id + 1
+    # Remove any existing reviews for demo user first
+    reviews = [r for r in reviews if r.get("user_id") != "1"]
     
+    # Use high IDs (99901-99905) to avoid collision with test-generated IDs
+    # Append to end so get_new_id() sees our high IDs and tests won't collide
     demo_reviews = [
         {
-            "review_id": str(next_id),
+            "review_id": "99901",
             "product_id": "1",
             "user_id": "1",
             "rating": 5.0,
@@ -161,7 +163,7 @@ def seed_demo_reviews():
             "created_at": "2025-01-20"
         },
         {
-            "review_id": str(next_id + 1),
+            "review_id": "99902",
             "product_id": "2",
             "user_id": "1",
             "rating": 4.5,
@@ -171,7 +173,7 @@ def seed_demo_reviews():
             "created_at": "2025-03-15"
         },
         {
-            "review_id": str(next_id + 2),
+            "review_id": "99903",
             "product_id": "3",
             "user_id": "1",
             "rating": 3.5,
@@ -181,7 +183,7 @@ def seed_demo_reviews():
             "created_at": "2025-05-10"
         },
         {
-            "review_id": str(next_id + 3),
+            "review_id": "99904",
             "product_id": "4",
             "user_id": "1",
             "rating": 4.0,
@@ -191,7 +193,7 @@ def seed_demo_reviews():
             "created_at": "2025-08-25"
         },
         {
-            "review_id": str(next_id + 4),
+            "review_id": "99905",
             "product_id": "5",
             "user_id": "1",
             "rating": 5.0,
@@ -202,8 +204,8 @@ def seed_demo_reviews():
         }
     ]
     
-    reviews = [r for r in reviews if r.get("user_id") != "1"]
-    reviews = demo_reviews + reviews
+    # Append demo reviews to the end (so get_new_id sees high IDs)
+    reviews.extend(demo_reviews)
     
     with open(reviews_path, "w", encoding="utf-8") as f:
         json.dump(reviews, f, indent=2, ensure_ascii=False)
