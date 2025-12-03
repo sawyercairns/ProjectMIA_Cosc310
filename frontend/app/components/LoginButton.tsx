@@ -9,11 +9,33 @@ export default function LoginButton() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userEmail, setUserEmail] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true')
-    setUserEmail(localStorage.getItem('userEmail') || '')
+    const email = localStorage.getItem('userEmail') || ''
+    setUserEmail(email)
+    
+    // Fetch user data to check if admin
+    if (email) {
+      fetchUserAdmin(email)
+    }
   }, [])
+
+  const fetchUserAdmin = async (email: string) => {
+    try {
+      const response = await fetch(`http://localhost:8000/login/users`)
+      if (response.ok) {
+        const users = await response.json()
+        const currentUser = users.find((u: any) => u.email === email)
+        if (currentUser) {
+          setIsAdmin(currentUser.is_admin || false)
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error)
+    }
+  }
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -63,6 +85,22 @@ export default function LoginButton() {
             >
               Settings
             </a>
+            {isAdmin && (
+              <a 
+                href="/admin"
+                style={{
+                  display: 'block',
+                  padding: '8px 16px',
+                  color: '#000',
+                  textDecoration: 'none',
+                  borderBottom: '1px solid #eee'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+              >
+                Admin Page
+              </a>
+            )}
             <a 
               href="#"
               onClick={handleLogout}

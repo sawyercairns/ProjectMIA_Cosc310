@@ -23,7 +23,7 @@ def test_add_remove_user(mocker):
     r = client.post("/login?email=e@e.com&password=p")
     u = get_user("e@e.com", "p")
     assert u is not None
-    r = client.delete("/login" + str(u.user_id) + "?email=admin@admin.com&password=password")
+    r = client.delete("/login/" + str(u.user_id) + "?email=admin@admin.com&password=password")
     u = get_user("e@e.com", "p")
     assert u is None
 
@@ -33,6 +33,6 @@ def test_add_remove_admin(mocker):
     r = client.post("/login/admin?auth_email=admin@admin.com&auth_password=password&email=e@e.com&password=p")
     u = get_user("e@e.com", "p")
     assert u is not None
-    r = client.delete("/login" + str(u.user_id) + "?email=admin@admin.com&password=password")
+    r = client.delete("/login/" + str(u.user_id) + "?email=admin@admin.com&password=password")
     u = get_user("e@e.com", "p")
     assert u is None

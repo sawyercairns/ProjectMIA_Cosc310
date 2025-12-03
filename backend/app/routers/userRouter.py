@@ -25,7 +25,7 @@ def get_all_users():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("{user_id}")
+@router.delete("/{user_id}")
 def delete_user(user_id: str, email:str, password: str):
     authenticate_admin(email, password)
     remove_user(user_id)
