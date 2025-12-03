@@ -27,16 +27,21 @@ class AddItemRequest(BaseModel):
 
 @router.post("/cart/items", response_model=dict)
 def add_item_endpoint(request: AddItemRequest):
-    order_item = OrderItem(
-        product_id = request.product_id,
-        product_name = request.product_name,
-        product_desc = request.product_desc,
-        quantity = request.quantity,
-        price = request.price
-    )
-    add_item(request.user_id, order_item)
-    cart = load_cart(request.user_id)
-    return cart.to_dict()
+    try:
+        order_item = OrderItem(
+            product_id = request.product_id,
+            product_name = request.product_name,
+            product_desc = request.product_desc,
+            quantity = request.quantity,
+            price = request.price
+        )
+        add_item(request.user_id, order_item)
+        cart = load_cart(request.user_id)
+        return cart.to_dict()
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.delete("/items", response_model=dict)
