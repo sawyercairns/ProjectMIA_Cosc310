@@ -95,7 +95,8 @@ export default async function Home({
 async function fetchProductsWithPagination(search: string, page: number) {
   try {
     const keyword = search || ''
-    const response = await fetch(`http://localhost:8000/products?keyword=${keyword}`)
+    const apiUrl = process.env.API_URL || 'http://localhost:8000'
+    const response = await fetch(`${apiUrl}/products?keyword=${keyword}`)
     const allProducts = await response.json()
     
     const itemsPerPage = 50
@@ -131,7 +132,8 @@ async function fetchProductsWithPagination(search: string, page: number) {
 
 async function fetchPopular(){
   try {
-    const response = await fetch('http://localhost:8000/products/popularProducts');
+    const apiUrl = process.env.API_URL || 'http://localhost:8000'
+    const response = await fetch(`${apiUrl}/products/popularProducts`);
     const data = await response.json();
     return data
   } catch (error) {
