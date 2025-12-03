@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 from app.schemas.reviewClass import Review
-from app.services.Interactor import create_item, remove_item
+from app.services.Interactor import create_item, remove_item, load_json
 
 def has_reviewed(user_id: int, product_id: int) -> bool:
     path = Path(__file__).resolve().parents[1] / "data" / "reviews.json"
@@ -33,6 +33,9 @@ def create_review(r:Review):
 
 def remove_review(id:int):
     remove_item("reviews.json", "review_id", id)
+
+def get_all_reviews():
+    return load_json("reviews.json")
 
 def get_reviews(user_id: int = None, product_id: int = None):
     path = Path(__file__).resolve().parents[1] / "data" / "reviews.json"
