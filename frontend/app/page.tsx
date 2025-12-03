@@ -1,6 +1,10 @@
 import Form from 'next/form'
 import LoginButton from './components/LoginButton'
 
+// Use internal Docker network URL for server-side, or localhost for client
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const INTERNAL_API_URL = process.env.INTERNAL_API_URL || API_URL
+
 export default async function Home({
   searchParams,
 }: {
@@ -95,7 +99,7 @@ export default async function Home({
 async function fetchProductsWithPagination(search: string, page: number) {
   try {
     const keyword = search || ''
-    const response = await fetch(`http://localhost:8000/products?keyword=${keyword}`)
+    const response = await fetch(`${INTERNAL_API_URL}/products?keyword=${keyword}`)
     const allProducts = await response.json()
     
     const itemsPerPage = 50
@@ -131,10 +135,11 @@ async function fetchProductsWithPagination(search: string, page: number) {
 
 async function fetchPopular(){
   try {
-    const response = await fetch('http://localhost:8000/products/popularProducts');
+    const response = await fetch(`${INTERNAL_API_URL}/products/popularProducts`);
     const data = await response.json();
     return data
   } catch (error) {
     console.error("Error fetching item:", error);
+    return []
   }
 }
