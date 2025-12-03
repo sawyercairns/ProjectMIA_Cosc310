@@ -171,7 +171,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       {/* Header */}
       <header>
         <div>
