@@ -7,6 +7,7 @@ import LoginButton from './components/LoginButton'
 export default function Home() {
   const [products, setProducts] = useState<any[]>([])
   const [popularItems, setPopularItems] = useState<any[]>([])
+  const [featuredItems, setFeaturedItems] = useState<any[]>([])
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [totalMatches, setTotalMatches] = useState(0)
@@ -16,6 +17,7 @@ export default function Home() {
   useEffect(() => {
     fetchProducts(search, page)
     fetchPopular()
+    fetchFeatured()
   }, [search, page])
 
   const fetchProducts = async (searchTerm: string, pageNum: number) => {
@@ -51,6 +53,33 @@ export default function Home() {
       setPopularItems(data)
     } catch (error) {
       console.error("Error fetching popular items:", error)
+    }
+  }
+
+  const fetchFeatured = async () => {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      
+      const featuredResponse = await fetch(`${apiUrl}/featured`)
+      const featuredData = await featuredResponse.json()
+      const productIds = featuredData.featured_product_ids
+
+      if (productIds.length === 0) {
+        setFeaturedItems([])
+        return
+      }
+
+      const productsResponse = await fetch(`${apiUrl}/products`)
+      const allProducts = await productsResponse.json()
+
+      // Filter to get only featured products (limit to 5)
+      const featured = allProducts
+        .filter((p: any) => productIds.includes(p._product_id.toString()))
+        .slice(0, 5)
+
+      setFeaturedItems(featured)
+    } catch (error) {
+      console.error("Error fetching featured items:", error)
     }
   }
 
@@ -172,10 +201,10 @@ export default function Home() {
   const hasNext = page < totalPages
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       <h1>ProjectMIA Online Shop</h1>
     
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <a href="/">🏠 Home</a>
         <LoginButton />
       </div>
@@ -192,6 +221,32 @@ export default function Home() {
       </form>
 
       <br /><br />
+
+      {featuredItems.length > 0 && (
+        <>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2>Featured Items:</h2>
+            <a href="/featuredItems">
+              <button>View All</button>
+            </a>
+          </div>
+          <ul>
+            {featuredItems.map((item: any) => (
+              <li key={item._product_id}>
+                <strong>{item._product_name}</strong><br />
+                {item._product_desc}<br />
+                Price: ${item._price.toFixed(2)}<br />
+                Rating: {item._rating.toFixed(1)} ({item._rating_count} reviews)<br />
+                Units sold: {item._units_sold}<br />
+                <button onClick={() => addToCart(item)}>Add to Cart</button><br />
+                <button onClick={() => addToWishlist(item)}>Add to Wishlist</button>
+                <hr />
+              </li>
+            ))}
+          </ul>
+          <br /><br />
+        </>
+      )}
 
       <h1>Popular Items: </h1>
       {popularItems.map((pop_item: any) => (
