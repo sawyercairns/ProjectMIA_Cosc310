@@ -162,10 +162,10 @@ export default function AdminPage() {
     const paginatedReviews = filteredReviews.slice((reviewPage - 1) * reviewsPerPage, reviewPage * reviewsPerPage)
 
     return (
-        <div>
+        <div style={{ padding: '20px' }}>
             <h1>👑 Admin Dashboard</h1>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <a href="/">🏠 Home</a>
                 <span>Welcome, {user.first_name}!</span>
             </div>
@@ -174,8 +174,11 @@ export default function AdminPage() {
                 <button onClick={() => setActiveTab('users')} style={{ marginRight: '10px' }}>
                     👥 Users ({users.filter((u: any) => !u.is_admin).length})
                 </button>
-                <button onClick={() => setActiveTab('reviews')}>
+                <button onClick={() => setActiveTab('reviews')} style={{ marginRight: '10px' }}>
                     📝 Reviews ({reviews.length})
+                </button>
+                <button onClick={() => window.location.href = '/admin/featuredItems'}>
+                    ⭐ Featured Items
                 </button>
             </div>
 

@@ -12,6 +12,7 @@ from app.routers.paymentRouter import router as payment_router
 from app.routers.reviewRouter import router as review_router
 from app.routers.notificationRouter import router as notification_router
 from app.routers.summaryRouter import router as summary_router
+from app.routers.featuredItemsRouter import router as featured_router
 from app.services.productInteractor import get_products_filtered
 
 app = FastAPI()
@@ -72,3 +73,4 @@ app.include_router(payment_router)
 app.include_router(review_router)
 app.include_router(notification_router)
 app.include_router(summary_router)
+app.include_router(featured_router)

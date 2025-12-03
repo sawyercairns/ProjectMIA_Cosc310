@@ -96,10 +96,10 @@ export default function CartPage() {
     const total = cart.cart_value || 0
 
     return (
-        <div>
+        <div style={{ padding: '20px' }}>
             <h1>Shopping Cart</h1>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <a href="/">🏠 Home</a>
             </div>
 
