@@ -1,5 +1,15 @@
 [
   {
+    "user_id": "1",
+    "user_password": "demo",
+    "email": "demo@example.com",
+    "first_name": "Demo",
+    "last_name": "User",
+    "age": 25,
+    "is_admin": false,
+    "image_url": ""
+  },
+  {
     "user_id": "101",
     "user_password": "test",
     "email": "test1@test.com",
