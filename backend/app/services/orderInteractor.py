@@ -14,6 +14,10 @@ Handles loading, saving, and managing user orders.
 
 path = Path(__file__).resolve().parents[1] / "data" / "orders.json"
 
+def get_orders_all():
+    data = load_json("orders.json")
+
+    return data
 
 def _reconstruct_order_items(order_data: dict) -> List[OrderItem]:
     """
@@ -203,4 +207,5 @@ def save_orders(user_id: str, orders: list):
     # Save back
     from app.services.Interactor import write_to_json
     write_to_json(path.name, data)
+    
     

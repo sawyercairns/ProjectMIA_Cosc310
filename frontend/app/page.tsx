@@ -21,7 +21,8 @@ export default function Home() {
   const fetchProducts = async (searchTerm: string, pageNum: number) => {
     try {
       const keyword = searchTerm || ''
-      const response = await fetch(`http://localhost:8000/products?keyword=${keyword}`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const response = await fetch(`${apiUrl}/products?keyword=${keyword}`)
       const allProducts = await response.json()
       
       const itemsPerPage = 50
@@ -44,7 +45,8 @@ export default function Home() {
 
   const fetchPopular = async () => {
     try {
-      const response = await fetch('http://localhost:8000/products/popularProducts')
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const response = await fetch(`${apiUrl}/products/popularProducts`)
       const data = await response.json()
       setPopularItems(data)
     } catch (error) {
@@ -64,7 +66,8 @@ export default function Home() {
 
     try {
       // Get user ID
-      const usersResponse = await fetch(`http://localhost:8000/login/users`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const usersResponse = await fetch(`${apiUrl}/login/users`)
       const users = await usersResponse.json()
       const currentUser = users.find((u: any) => u.email === userEmail)
 
@@ -79,7 +82,7 @@ export default function Home() {
       }
 
       // Add to cart
-      const response = await fetch(`http://localhost:8000/cart/cart/items`, {
+      const response = await fetch(`${apiUrl}/cart/cart/items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +118,8 @@ export default function Home() {
 
     try {
       // Get user ID
-      const usersResponse = await fetch(`http://localhost:8000/login/users`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const usersResponse = await fetch(`${apiUrl}/login/users`)
       const users = await usersResponse.json()
       const currentUser = users.find((u: any) => u.email === userEmail)
 
@@ -130,7 +134,7 @@ export default function Home() {
       }
 
       // Add to wishlist
-      const response = await fetch(`http://localhost:8000/wishlist/items`, {
+      const response = await fetch(`${apiUrl}/wishlist/items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
