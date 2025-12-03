@@ -96,7 +96,7 @@ export default function ReviewsPage() {
   }
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       {/* Header */}
       <header>
         <div>
