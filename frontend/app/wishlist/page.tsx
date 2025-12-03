@@ -153,7 +153,7 @@ export default function WishlistPage() {
         <header>
           <div>
             <h1>My Wishlist</h1>
-            <a href="/">Home</a>
+            <a href="/">🏠 Home</a>
           </div>
         </header>
         <div>
@@ -164,7 +164,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       {/* Header */}
       <header>
         <div>
