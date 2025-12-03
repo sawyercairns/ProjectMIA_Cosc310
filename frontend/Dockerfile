@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-FROM node:20-alpine
+FROM node:25-alpine
 =======
 # Picked from https://hub.docker.com/_/node
 FROM node:25-alpine
