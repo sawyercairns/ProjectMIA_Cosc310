@@ -9,14 +9,14 @@
           "product_name": "Wayona Nylon Braided USB Cable",
           "product_desc": "Lightning cable",
           "quantity": 2,
-          "price": 17.58
+          "price": "17.58"
         },
         {
           "product_id": 5,
           "product_name": "Portronics Konnect L Cable",
           "product_desc": "Fast charging cable",
           "quantity": 1,
-          "price": 6.38
+          "price": "6.38"
         }
       ],
       "address": {
@@ -41,7 +41,7 @@
           "product_name": "Sounce Fast Phone Charging Cable",
           "product_desc": "iPhone cable",
           "quantity": 3,
-          "price": 30.38
+          "price": "30.38"
         }
       ],
       "address": {
@@ -66,14 +66,14 @@
           "product_name": "boAt Deuce USB 300 Cable",
           "product_desc": "Type-C cable",
           "quantity": 1,
-          "price": 11.18
+          "price": "11.18"
         },
         {
           "product_id": 6,
           "product_name": "pTron Solero TB301 Cable",
           "product_desc": "Fast charging cable",
           "quantity": 2,
-          "price": 16.0
+          "price": "16.0"
         }
       ],
       "address": {
@@ -98,7 +98,7 @@
           "product_name": "Ambrane Unbreakable 60W Cable",
           "product_desc": "Braided Type C",
           "quantity": 4,
-          "price": 5.58
+          "price": "5.58"
         }
       ],
       "address": {
@@ -123,21 +123,21 @@
           "product_name": "Wayona Nylon Braided USB Cable",
           "product_desc": "Lightning cable",
           "quantity": 5,
-          "price": 17.58
+          "price": "17.58"
         },
         {
           "product_id": 2,
           "product_name": "Ambrane Unbreakable 60W Cable",
           "product_desc": "Braided Type C",
           "quantity": 3,
-          "price": 5.58
+          "price": "5.58"
         },
         {
           "product_id": 3,
           "product_name": "Sounce Fast Phone Charging Cable",
           "product_desc": "iPhone cable",
           "quantity": 2,
-          "price": 30.38
+          "price": "30.38"
         }
       ],
       "address": {
@@ -162,7 +162,7 @@
           "product_name": "boAt Deuce USB 300 Cable",
           "product_desc": "Type-C cable",
           "quantity": 2,
-          "price": 11.18
+          "price": "11.18"
         }
       ],
       "address": {
@@ -187,14 +187,14 @@
           "product_name": "Portronics Konnect L Cable",
           "product_desc": "Fast charging cable",
           "quantity": 1,
-          "price": 6.38
+          "price": "6.38"
         },
         {
           "product_id": 6,
           "product_name": "pTron Solero TB301 Cable",
           "product_desc": "Fast charging cable",
           "quantity": 1,
-          "price": 16.0
+          "price": "16.0"
         }
       ],
       "address": {
@@ -206,7 +206,7 @@
       },
       "order_date": "2025-11-08T15:45:00",
       "total_price": "22.38",
-      "returned": false,
+      "returned": true,
       "is_gift": false,
       "gifter_id": null
     }
