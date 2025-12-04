@@ -5,6 +5,15 @@ import { useState, useEffect } from 'react'
 export default function CartPage() {
     const [cart, setCart] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+    const [placingOrder, setPlacingOrder] = useState(false)
+    const [userId, setUserId] = useState<number | null>(null)
+    const [address, setAddress] = useState({
+        line1: "",
+        line2: "",
+        city: "",
+        province: "",
+        country: ""
+    })
 
     useEffect(() => {
         const userEmail = localStorage.getItem('userEmail')
@@ -17,19 +26,21 @@ export default function CartPage() {
 
     const fetchCart = async (email: string) => {
         try {
-            // First get user to find user_id
             const usersResponse = await fetch(`http://localhost:8000/login/users`)
             if (!usersResponse.ok) {
                 setLoading(false)
                 return
             }
+            
             const users = await usersResponse.json()
-            const currentUser = users.find((u: any) => u.email === email)
+            const currentUser = users.find((u: any) => u.email == email)
             
             if (!currentUser) {
                 setLoading(false)
                 return
             }
+
+            setUserId(currentUser.user_id)
 
             // Check if user is admin
             if (currentUser.is_admin) {
@@ -37,7 +48,6 @@ export default function CartPage() {
                 return
             }
 
-            // Then get cart
             const cartResponse = await fetch(`http://localhost:8000/cart?user_id=${currentUser.user_id}`)
             if (cartResponse.ok) {
                 const cartData = await cartResponse.json()
@@ -59,7 +69,7 @@ export default function CartPage() {
         try {
             const usersResponse = await fetch(`http://localhost:8000/login/users`)
             const users = await usersResponse.json()
-            const currentUser = users.find((u: any) => u.email === userEmail)
+            const currentUser = users.find((u: any) => u.email == userEmail)
 
             const response = await fetch(`http://localhost:8000/cart/items?user_id=${currentUser.user_id}&product_id=${productId}`, {
                 method: 'DELETE'
@@ -73,6 +83,80 @@ export default function CartPage() {
         } catch (error) {
             console.error("Error removing item:", error)
             alert('Error removing item')
+        }
+    }
+
+    const handlePlaceOrder = async () => {
+        if (!userId || !cart || cart.cart_items.length == 0) return
+
+        // validate address
+        if (!address.line1 || !address.city || !address.province || !address.country) {
+            alert('Please fill in all required address fields (Address Line 1, City, Province, Country)')
+            return
+        }
+
+        setPlacingOrder(true)
+        try {
+            const paymentResponse = await fetch(`http://localhost:8000/payment?user_id=${userId}`)
+            
+            if (!paymentResponse.ok) {
+                alert('Please update your payment method.')
+                setPlacingOrder(false)
+                return
+            }
+
+            const paymentData = await paymentResponse.json()
+            
+            if (!paymentData.card_number || paymentData.card_number == '') {
+                alert('Please update your payment method.')
+                setPlacingOrder(false)
+                return
+            }
+
+            const orderItems = cart.cart_items.map((item: any) => ({
+                product_id: item.product_id,
+                product_name: item.product_name,
+                product_desc: item.product_desc,
+                quantity: item.quantity,
+                price: parseFloat(item.price)
+            }))
+
+            const orderRequest = {
+                user_id: userId,
+                order_items: orderItems,
+                address: address
+            }
+
+            const orderResponse = await fetch('http://localhost:8000/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderRequest)
+            })
+
+            if (orderResponse.ok) {
+                // clear cart
+                for (const item of cart.cart_items) {
+                    await fetch(`http://localhost:8000/cart/items?user_id=${userId}&product_id=${item.product_id}`, {
+                        method: 'DELETE'
+                    })
+                }
+                
+                alert('Order Placed')
+                const userEmail = localStorage.getItem('userEmail')
+                if (userEmail) {
+                    fetchCart(userEmail)
+                }
+            } else {
+                const errorData = await orderResponse.text()
+                alert(`Failed to place order: ${errorData}`)
+            }
+        } catch (error) {
+            console.error('Error placing order:', error)
+            alert('Error placing order. Please try again.')
+        } finally {
+            setPlacingOrder(false)
         }
     }
 
@@ -101,7 +185,69 @@ export default function CartPage() {
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <a href="/">🏠 Home</a>
+                {items.length > 0 && (
+                    <button
+                        onClick={handlePlaceOrder}
+                        disabled={placingOrder}
+                        className="place-order-btn"
+                    >
+                        {placingOrder ? 'Processing...' : 'Place Order'}
+                    </button>
+                )}
             </div>
+
+            {items.length > 0 && (
+                <div className="address-section">
+                    <h3>Shipping Address</h3>
+                    <div className="address-form">
+                        <div className="form-field">
+                            <label>Address Line 1 *</label>
+                            <input
+                                type="text"
+                                value={address.line1}
+                                onChange={(e) => setAddress({...address, line1: e.target.value})}
+                                placeholder="Street address"
+                            />
+                        </div>
+                        <div className="form-field">
+                            <label>Address Line 2</label>
+                            <input
+                                type="text"
+                                value={address.line2}
+                                onChange={(e) => setAddress({...address, line2: e.target.value})}
+                                placeholder="Apartment, suite, etc. (optional)"
+                            />
+                        </div>
+                        <div className="form-field">
+                            <label>City *</label>
+                            <input
+                                type="text"
+                                value={address.city}
+                                onChange={(e) => setAddress({...address, city: e.target.value})}
+                                placeholder="City"
+                            />
+                        </div>
+                        <div className="form-field">
+                            <label>Province *</label>
+                            <input
+                                type="text"
+                                value={address.province}
+                                onChange={(e) => setAddress({...address, province: e.target.value})}
+                                placeholder="Province"
+                            />
+                        </div>
+                        <div className="form-field">
+                            <label>Country *</label>
+                            <input
+                                type="text"
+                                value={address.country}
+                                onChange={(e) => setAddress({...address, country: e.target.value})}
+                                placeholder="Country"
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <h2>Cart Items</h2>
 
