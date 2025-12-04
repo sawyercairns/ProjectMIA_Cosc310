@@ -30,19 +30,10 @@ services:
       - /app/node_modules
       - /app/.next
     environment:
-<<<<<<< HEAD
-      - NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
-      - INTERNAL_API_URL=http://app:8000
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
-    depends_on:
-      - app
-=======
       - API_URL=http://backend:8000
       - NEXT_PUBLIC_API_URL=http://localhost:8000
     depends_on:
       - backend
->>>>>>> ba967eb5a787e7bc79aafb924ee62614baa0fac4
 
 volumes:
   postgres_data:
