@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, HTTPException
 from app.schemas.productClass import Product
 import json
 from app.services import productInteractor
@@ -32,4 +32,14 @@ def delete_product(email:str, password: str, id:int):
     authenticate_admin(email, password)
     productInteractor.remove_product(id)
     return "PRODUCT REMOVED"
+
+
+@router.post("/{product_id}/apply-discount", response_model=None)
+def apply_discount_price(product_id: int, email: str, password: str):
+    authenticate_admin(email, password)
+    try:
+        productInteractor.swap_price_with_discount(product_id)
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+    return {"message": "Product price swapped with discount price"}
     
