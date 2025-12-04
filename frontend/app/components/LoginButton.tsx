@@ -102,20 +102,6 @@ export default function LoginButton() {
                   Cart
                 </a>
                 <a 
-                  href="/orders"
-                  style={{
-                    display: 'block',
-                    padding: '8px 16px',
-                    color: '#000',
-                    textDecoration: 'none',
-                    borderBottom: '1px solid #eee'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
-                >
-                    Orders
-                </a>
-                <a 
                   href="/wishlist"
                   style={{
                     display: 'block',
