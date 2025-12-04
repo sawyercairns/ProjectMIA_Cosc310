@@ -4,6 +4,24 @@ import { useState, useEffect } from 'react'
 import Form from 'next/form'
 import LoginButton from './components/LoginButton'
 
+<<<<<<< HEAD
+// Use internal Docker network URL for server-side, or localhost for client
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const INTERNAL_API_URL = process.env.INTERNAL_API_URL || API_URL
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const params = await searchParams
+  const search = (params.query as string) || ''
+  const page = parseInt((params.page as string) || '1')
+  
+  const result = await fetchProductsWithPagination(search, page)
+  const { products, displayedCount, totalMatches, currentPage, totalPages, hasPrevious, hasNext } = result
+  const popular_items = await fetchPopular()
+=======
 export default function Home() {
   const [products, setProducts] = useState<any[]>([])
   const [popularItems, setPopularItems] = useState<any[]>([])
@@ -199,6 +217,7 @@ export default function Home() {
 
   const hasPrevious = page > 1
   const hasNext = page < totalPages
+>>>>>>> ba967eb5a787e7bc79aafb924ee62614baa0fac4
 
   return (
     <div style={{ padding: '20px' }}>
@@ -303,5 +322,57 @@ export default function Home() {
         )}
       </div>
     </div> 
+<<<<<<< HEAD
+  );
+}
+
+async function fetchProductsWithPagination(search: string, page: number) {
+  try {
+    const keyword = search || ''
+    const response = await fetch(`${INTERNAL_API_URL}/products?keyword=${keyword}`)
+    const allProducts = await response.json()
+    
+    const itemsPerPage = 50
+    const startIndex = (page - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    
+    const products = allProducts.slice(startIndex, endIndex)
+    const totalMatches = allProducts.length
+    const totalPages = Math.ceil(totalMatches / itemsPerPage)
+    
+    return {
+      products,
+      displayedCount: products.length,
+      totalMatches,
+      currentPage: page,
+      totalPages: totalPages || 1,
+      hasPrevious: page > 1,
+      hasNext: page < totalPages
+    }
+  } catch (error) {
+    console.error("Error fetching products:", error)
+    return {
+      products: [],
+      displayedCount: 0,
+      totalMatches: 0,
+      currentPage: 1,
+      totalPages: 1,
+      hasPrevious: false,
+      hasNext: false
+    }
+  }
+}
+
+async function fetchPopular(){
+  try {
+    const response = await fetch(`${INTERNAL_API_URL}/products/popularProducts`);
+    const data = await response.json();
+    return data
+  } catch (error) {
+    console.error("Error fetching item:", error);
+    return []
+  }
+=======
   )
+>>>>>>> ba967eb5a787e7bc79aafb924ee62614baa0fac4
 }
