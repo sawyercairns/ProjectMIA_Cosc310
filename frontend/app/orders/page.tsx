@@ -6,6 +6,7 @@ export default function OrdersPage() {
     const [orders, setOrders] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [userId, setUserId] = useState<number | null>(null)
+    const [returningOrder, setReturningOrder] = useState<number | null>(null)
 
     useEffect(() => {
         const userEmail = localStorage.getItem('userEmail')
@@ -44,6 +45,46 @@ export default function OrdersPage() {
             console.error("Error fetching orders:", error)
         } finally {
             setLoading(false)
+        }
+    }
+
+    const handleReturnOrder = async (orderId: number) => {
+        if (!userId) return
+
+        const confirmReturn = window.confirm(`Are you sure you want to return Order #${orderId}?`)
+        if (!confirmReturn) return
+
+        setReturningOrder(orderId)
+        try {
+            const response = await fetch(`http://localhost:8000/returns/${userId}/${orderId}`, {
+                method: 'POST',
+            })
+
+            if (response.ok) {
+                const result = await response.json()
+                if (result === true) {
+                    alert('Order returned successfully!')
+                    // Update the order in the local state
+                    setOrders(prevOrders =>
+                        prevOrders.map(order =>
+                            order.order_id === orderId
+                                ? { ...order, returned: true }
+                                : order
+                        )
+                    )
+                } else {
+                    alert('Failed to return order. The order may be outside the return window, already returned, or a gift order.')
+                }
+            } else {
+                const errorText = await response.text()
+                console.error('Return failed:', response.status, errorText)
+                alert(`Error processing return: ${response.status} - ${errorText}`)
+            }
+        } catch (error) {
+            console.error('Error returning order:', error)
+            alert('Error processing return. Please try again.')
+        } finally {
+            setReturningOrder(null)
         }
     }
 
@@ -112,6 +153,25 @@ export default function OrdersPage() {
                                         <h3 style={{ margin: '0', color: '#4CAF50' }}>
                                             ${parseFloat(order.total_price).toFixed(2)}
                                         </h3>
+                                        {!order.returned && !order.is_gift && (
+                                            <button
+                                                onClick={() => handleReturnOrder(order.order_id)}
+                                                disabled={returningOrder === order.order_id}
+                                                style={{
+                                                    marginTop: '10px',
+                                                    padding: '8px 16px',
+                                                    backgroundColor: returningOrder === order.order_id ? '#ccc' : '#f44336',
+                                                    color: '#fff',
+                                                    border: 'none',
+                                                    borderRadius: '4px',
+                                                    cursor: returningOrder === order.order_id ? 'not-allowed' : 'pointer',
+                                                    fontSize: '14px',
+                                                    fontWeight: 'bold'
+                                                }}
+                                            >
+                                                {returningOrder === order.order_id ? 'Processing...' : 'Return'}
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
