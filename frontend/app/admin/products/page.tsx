@@ -20,6 +20,7 @@ export default function AdminProductsPage() {
 	const [formData, setFormData] = useState({ name: "", description: "", price: "", discountPrice: "" })
 	const [submitting, setSubmitting] = useState(false)
 	const [removingId, setRemovingId] = useState<number | null>(null)
+	const [swappingId, setSwappingId] = useState<number | null>(null)
 	const productsPerPage = 20
 
 	useEffect(() => {
@@ -51,6 +52,36 @@ export default function AdminProductsPage() {
 			console.error("Error verifying admin status:", error)
 			setAccessDenied(true)
 			setLoading(false)
+		}
+	}
+
+	const handleSwapPrice = async (productId: number) => {
+		const password = prompt("Enter your admin password to apply the discount price to this product")
+		if (!password) return
+
+		setSwappingId(productId)
+		try {
+			const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+			const params = new URLSearchParams({
+				email: userEmail,
+				password
+			})
+			const response = await fetch(`${apiUrl}/products/${productId}/apply-discount?${params.toString()}`, {
+				method: "POST"
+			})
+			if (response.ok) {
+				alert("Product price updated")
+				fetchProducts()
+			} else {
+				const errorBody = await response.json().catch(() => null)
+				const message = errorBody?.detail || errorBody?.message || "Failed to apply discount price"
+				alert(message)
+			}
+		} catch (error) {
+			console.error("Error applying discount price:", error)
+			alert("Error applying discount price")
+		} finally {
+			setSwappingId(null)
 		}
 	}
 
@@ -314,6 +345,13 @@ export default function AdminProductsPage() {
 												{product._discount_price ? `$${product._discount_price.toFixed(2)}` : "—"}
 											</td>
 											<td style={{ border: "1px solid #ddd", padding: "8px" }}>
+												<button
+													onClick={() => handleSwapPrice(product._product_id)}
+													disabled={!product._discount_price || swappingId === product._product_id}
+													style={{ marginRight: "8px", padding: "6px 12px" }}
+												>
+													{swappingId === product._product_id ? "Applying..." : "Apply Discount"}
+												</button>
 												<button
 													onClick={() => handleRemoveProduct(product._product_id)}
 													disabled={removingId === product._product_id}
