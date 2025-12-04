@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import LoginButton from '../components/LoginButton'
 
-export default function AddReviews() {
+function AddReviewsContent() {
   const searchParams = useSearchParams()
   const productId = searchParams.get('productId')
   
@@ -247,5 +247,13 @@ export default function AddReviews() {
         </ul>
       )}
     </div>
+  )
+}
+
+export default function AddReviews() {
+  return (
+    <Suspense fallback={<div style={{ padding: '20px' }}>Loading...</div>}>
+      <AddReviewsContent />
+    </Suspense>
   )
 }
