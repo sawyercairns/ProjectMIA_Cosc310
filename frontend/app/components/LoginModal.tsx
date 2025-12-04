@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 
 // Dynamically import ReCAPTCHA to avoid SSR issues
@@ -19,7 +19,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [message, setMessage] = useState('')
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
-  const recaptchaRef = useRef<any>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -107,7 +106,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
               {mounted && (
                 <ReCAPTCHA
-                  ref={recaptchaRef}
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
                   onChange={handleCaptchaChange}
                 />
