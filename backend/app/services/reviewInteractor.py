@@ -1,9 +1,10 @@
 import json
 import os
 from pathlib import Path
+from typing import Optional
 
 from app.schemas.reviewClass import Review
-from app.services.Interactor import create_item, remove_item, load_json
+from app.services.Interactor import create_item, remove_item, load_json, write_to_json
 
 def has_reviewed(user_id: int, product_id: int) -> bool:
     path = Path(__file__).resolve().parents[1] / "data" / "reviews.json"
@@ -48,9 +49,7 @@ def get_reviews(user_id: int = None, product_id: int = None):
     return review_list
 
 def update_review(user_id: int, product_id: int, rating: float = None, title: str = None, body: str = None):
-    path = Path(__file__).resolve().parents[1] / "data" / "reviews.json"
-    with path.open("r", encoding="UTF-8") as f:
-        reviews = json.load(f)
+    reviews = load_json("reviews.json")
 
     review_found = False
     for review in reviews:
@@ -66,6 +65,47 @@ def update_review(user_id: int, product_id: int, rating: float = None, title: st
     
     if not review_found:
         raise ValueError("Review not found.")
-    
-    with path.open("w", encoding="UTF-8") as f:
-        json.dump(reviews, f, indent=2)
+
+    write_to_json("reviews.json", reviews)
+
+
+def get_review_by_id(review_id: int) -> Optional[dict]:
+    reviews = load_json("reviews.json")
+    for review in reviews:
+        if int(review.get("review_id", -1)) == review_id:
+            return review
+    return None
+
+
+def update_review_by_id(
+    review_id: int,
+    acting_user_id: int,
+    acting_user_is_admin: bool,
+    rating: Optional[float] = None,
+    title: Optional[str] = None,
+    body: Optional[str] = None,
+):
+    reviews = load_json("reviews.json")
+
+    target_review = None
+    for review in reviews:
+        if int(review.get("review_id", -1)) == review_id:
+            target_review = review
+            break
+
+    if target_review is None:
+        raise ValueError("Review not found.")
+
+    if not acting_user_is_admin and acting_user_id != int(target_review.get("user_id")):
+        raise PermissionError("Not authorized to update this review.")
+
+    if rating is not None:
+        target_review["rating"] = rating
+    if title is not None:
+        target_review["title"] = title
+    if body is not None:
+        target_review["body"] = body
+
+    write_to_json("reviews.json", reviews)
+
+    return target_review

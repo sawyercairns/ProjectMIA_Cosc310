@@ -143,19 +143,39 @@ export default function AdminPage() {
         .filter((u: any) => !u.is_admin)
         .filter((u: any) => {
             const fullName = `${u.first_name} ${u.last_name}`.toLowerCase()
-            const userId = u.user_id.toString().toLowerCase()
-            const searchTerm = searchName.toLowerCase()
-            return fullName.includes(searchTerm) || userId.includes(searchTerm)
+            const userId = String(u.user_id)
+            const searchTerm = searchName.trim()
+            
+            if (searchTerm === '') {
+                return true
+            }
+            
+            if (/^\d+$/.test(searchTerm)) {
+                return userId === searchTerm
+            }
+            
+            return fullName.includes(searchTerm.toLowerCase())
         })
 
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage)
     const paginatedUsers = filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage)
 
     const filteredReviews = reviews.filter((r: any) => {
-        const userId = r.user_id.toString().toLowerCase()
-        const productId = r.product_id.toString().toLowerCase()
-        const searchTerm = searchReview.toLowerCase()
-        return userId.includes(searchTerm) || productId.includes(searchTerm)
+        const userId = String(r.user_id)
+        const productId = String(r.product_id)
+        const searchTerm = searchReview.trim()
+        
+     
+        if (searchTerm === '') {
+            return true
+        }
+     
+        if (/^\d+$/.test(searchTerm)) {
+            return userId === searchTerm || productId === searchTerm
+        }
+        
+       
+        return false
     })
 
     const totalReviewPages = Math.ceil(filteredReviews.length / reviewsPerPage)
