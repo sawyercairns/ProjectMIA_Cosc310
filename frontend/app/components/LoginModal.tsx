@@ -26,19 +26,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   if (!isOpen) return null
 
-  const handleCaptchaChange = (token: string | null) => {
-    setCaptchaToken(token)
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMessage('')
-
-    // Validate reCAPTCHA
-    if (!captchaToken) {
-      setMessage('Please complete the CAPTCHA verification')
-      return
-    }
 
     try {
       const response = await fetch(`http://localhost:8000/login?email=${email}&password=${password}`)

@@ -4,6 +4,7 @@ from app.schemas.wishListClass import WishList, WishListEntry
 from pathlib import Path
 from datetime import date
 from app.services.Interactor import load_json, write_to_json
+from datetime import datetime
 
 """
 This file is the functions that the user can interact with.
@@ -26,13 +27,24 @@ def load_wishList(user_id: str) -> WishList:
         _save_wishList(empty_wishList)
         return empty_wishList
 
-    items = [
-        WishListEntry(
-            product_id = item["product_id"],
-            date_added = date.fromisoformat(item["date_added"])
+    items = []
+    for item in user_wishList.get("entries", []):
+        date_value = item.get("date_added") or item.get("added_at")
+        if date_value is None:
+            raise ValueError("Wishlist entry missing date information")
+        if isinstance(date_value, date):
+            parsed_date = date_value
+        else:
+            try:
+                parsed_date = date.fromisoformat(date_value)
+            except ValueError:
+                parsed_date = datetime.fromisoformat(date_value).date()
+        items.append(
+            WishListEntry(
+                product_id = item["product_id"],
+                date_added = parsed_date
+            )
         )
-        for item in user_wishList.get("entries", [])
-    ]
 
     return WishList(user_id = user_id, entries = items)
 
