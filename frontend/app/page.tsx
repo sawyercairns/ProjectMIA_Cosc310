@@ -249,12 +249,14 @@ export default function Home() {
       )}
 
       <h1>Popular Items: </h1>
-      {popularItems.map((pop_item: any) => (
-          <li key={pop_item._product_name}>
-          <strong>{pop_item._product_name}</strong><br />
-            <hr />
-          </li>
-        ))}
+      <ul>
+        {popularItems.map((pop_item: any) => (
+            <li key={pop_item._product_name}>
+            <strong>{pop_item._product_name}</strong><br />
+              <hr />
+            </li>
+          ))}
+      </ul>
 
       <br /><br />
 
