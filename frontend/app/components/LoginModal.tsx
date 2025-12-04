@@ -26,9 +26,19 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   if (!isOpen) return null
 
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMessage('')
+
+    // Validate reCAPTCHA
+    if (!captchaToken) {
+      setMessage('Please complete the CAPTCHA verification')
+      return
+    }
 
     try {
       const response = await fetch(`http://localhost:8000/login?email=${email}&password=${password}`)
@@ -96,7 +106,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
               {mounted && (
                 <ReCAPTCHA
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                  sitekey={"6LfhXCAsAAAAAIoqk3RLs6VTw0L93LY_xmbK3c5a"}
                   onChange={handleCaptchaChange}
                 />
               )}
