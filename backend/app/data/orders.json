@@ -209,6 +209,31 @@
       "returned": false,
       "is_gift": false,
       "gifter_id": null
+    },
+    {
+      "order_id": 8,
+      "user_id": 1,
+      "order_items": [
+        {
+          "product_id": 13,
+          "product_name": "AmazonBasics Flexible Premium HDMI Cable (Black, 4K@60Hz, 18Gbps), 3-Foot",
+          "product_desc": "Flexible, lightweight HDMI cable for connecting media devices to playback display such as HDTVs, projectors, and more|Compatible with Blu-Ray players, computers, Apple TV, Roku, cable, PS4, Xbox One, and other HDMI-compatible devices|Solid copper conductors and full metal jacket shielding for durability and high-performance connectivity|Supports Ethernet, 3D, 4K video and Audio Return Channel (ARC) and meets the latest HDMI standards|Supports bandwidth up to 18Gbps and is backwards compatible with earlier versions|Includes a 3 foot cable",
+          "quantity": 1,
+          "price": "11.2"
+        }
+      ],
+      "address": {
+        "line1": "1",
+        "line2": "1",
+        "city": "1",
+        "province": "1",
+        "country": "1"
+      },
+      "order_date": "2025-12-04T22:48:34.179525",
+      "total_price": "11.20",
+      "returned": false,
+      "is_gift": false,
+      "gifter_id": null
     }
   ]
 }
