@@ -1,12 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import dynamic from 'next/dynamic'
-
-// Dynamically import ReCAPTCHA to avoid SSR issues
-const ReCAPTCHA = dynamic(() => import('react-google-recaptcha'), {
-  ssr: false,
-})
+import { useState } from 'react'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -17,29 +11,12 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
-  const [mounted, setMounted] = useState(false)
-  const recaptchaRef = useRef<any>(null)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   if (!isOpen) return null
-
-  const handleCaptchaChange = (token: string | null) => {
-    setCaptchaToken(token)
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMessage('')
-
-    // Validate reCAPTCHA
-    if (!captchaToken) {
-      setMessage('Please complete the CAPTCHA verification')
-      return
-    }
 
     try {
       const response = await fetch(`http://localhost:8000/login?email=${email}&password=${password}`)
@@ -103,16 +80,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-
-            <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
-              {mounted && (
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
-                  onChange={handleCaptchaChange}
-                />
-              )}
-            </div>
 
             {message && (
               <div style={{ color: message.includes('successful') ? 'green' : 'red', fontSize: '13px', marginTop: '4px' }}>

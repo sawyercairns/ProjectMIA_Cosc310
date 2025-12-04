@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-FROM node:25-alpine
-=======
 # Picked from https://hub.docker.com/_/node
 FROM node:25-alpine
->>>>>>> ba967eb5a787e7bc79aafb924ee62614baa0fac4
 
 WORKDIR /app
 
@@ -13,11 +9,6 @@ RUN npm install
 
 COPY . .
 
-<<<<<<< HEAD
-EXPOSE 3000
-
-CMD ["npm", "run", "dev"]
-=======
 # Build the Next.js application
 RUN npm run build
 
@@ -25,4 +16,3 @@ RUN npm run build
 EXPOSE 3000
 
 CMD ["npm", "start"]
->>>>>>> ba967eb5a787e7bc79aafb924ee62614baa0fac4
