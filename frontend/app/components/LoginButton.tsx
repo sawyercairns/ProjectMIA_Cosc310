@@ -10,6 +10,7 @@ export default function LoginButton() {
   const [userEmail, setUserEmail] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [notificationCount, setNotificationCount] = useState(0)
 
   useEffect(() => {
     setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true')
@@ -30,10 +31,23 @@ export default function LoginButton() {
         const currentUser = users.find((u: any) => u.email === email)
         if (currentUser) {
           setIsAdmin(currentUser.is_admin || false)
+          fetchNotificationCount(currentUser.user_id)
         }
       }
     } catch (error) {
       console.error("Error fetching user:", error)
+    }
+  }
+
+  const fetchNotificationCount = async (userId: number) => {
+    try {
+      const response = await fetch(`http://localhost:8000/notifications/${userId}`)
+      if (response.ok) {
+        const notifications = await response.json()
+        setNotificationCount(notifications.length)
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error)
     }
   }
 
@@ -128,6 +142,20 @@ export default function LoginButton() {
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
                 >
                     Wishlist
+                </a>
+                <a 
+                  href="/notifications"
+                  style={{
+                    display: 'block',
+                    padding: '8px 16px',
+                    color: '#000',
+                    textDecoration: 'none',
+                    borderBottom: '1px solid #eee'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                >
+                    Notifications{notificationCount > 0 ? ` (${notificationCount})` : ''}
                 </a>
               </>
             )}
