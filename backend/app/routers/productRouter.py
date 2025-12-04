@@ -22,9 +22,9 @@ def get_product_by_id(product_id: int):
     return productInteractor.get_product(product_id)
 
 @router.post("", response_model=None, status_code=201)
-def create_product(email:str, password:str, product_name:str, description:str, price:float):
+def create_product(email:str, password:str, product_name:str, description:str, price:float, discount_price: float = 0.0):
     authenticate_admin(email, password)
-    productInteractor.create_product(Product(0, product_name, description, price))
+    productInteractor.create_product(Product(0, product_name, description, price, discount_price))
     return "PRODUCT CREATED"
 
 @router.delete("", response_model=None, status_code=204)
