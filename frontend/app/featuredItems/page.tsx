@@ -203,7 +203,10 @@ export default function FeaturedItems() {
               Rating: {item._rating.toFixed(1)} ({item._rating_count} reviews)<br />
               Units sold: {item._units_sold}<br />
               <button onClick={() => addToCart(item)}>Add to Cart</button><br />
-              <button onClick={() => addToWishlist(item)}>Add to Wishlist</button>
+              <button onClick={() => addToWishlist(item)}>Add to Wishlist</button><br />
+              <a href={`/addReviews?productId=${item._product_id}`}>
+                <button>Review</button>
+              </a>
               <hr />
             </li>
           ))}
