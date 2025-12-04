@@ -7,6 +7,7 @@ type Product = {
 	_product_name: string
 	_product_desc: string
 	_price: number
+	_discount_price?: number | null
 }
 
 export default function AdminProductsPage() {
@@ -16,7 +17,7 @@ export default function AdminProductsPage() {
 	const [accessDenied, setAccessDenied] = useState(false)
 	const [searchTerm, setSearchTerm] = useState("")
 	const [currentPage, setCurrentPage] = useState(1)
-	const [formData, setFormData] = useState({ name: "", description: "", price: "" })
+	const [formData, setFormData] = useState({ name: "", description: "", price: "", discountPrice: "" })
 	const [submitting, setSubmitting] = useState(false)
 	const [removingId, setRemovingId] = useState<number | null>(null)
 	const productsPerPage = 20
@@ -86,6 +87,16 @@ export default function AdminProductsPage() {
 			return
 		}
 
+		const discountValue = formData.discountPrice.trim() ? parseFloat(formData.discountPrice) : 0
+		if (Number.isNaN(discountValue) || discountValue < 0) {
+			alert("Discount price must be zero or a positive number")
+			return
+		}
+		if (discountValue > priceValue) {
+			alert("Discount price cannot exceed the regular price")
+			return
+		}
+
 		const password = prompt("Enter your admin password to create this product")
 		if (!password) return
 
@@ -97,7 +108,8 @@ export default function AdminProductsPage() {
 				password,
 				product_name: formData.name.trim(),
 				description: formData.description.trim(),
-				price: priceValue.toString()
+				price: priceValue.toString(),
+				discount_price: discountValue.toString()
 			})
 
 			const response = await fetch(`${apiUrl}/products?${params.toString()}`, {
@@ -106,7 +118,7 @@ export default function AdminProductsPage() {
 
 			if (response.ok) {
 				alert("Product created successfully!")
-				setFormData({ name: "", description: "", price: "" })
+				setFormData({ name: "", description: "", price: "", discountPrice: "" })
 				fetchProducts()
 			} else {
 				const errorText = await response.text()
@@ -224,6 +236,18 @@ export default function AdminProductsPage() {
 							style={{ border: "1px solid #000", borderRadius: "4px", padding: "6px" }}
 						/>
 					</label>
+					<label>
+						Discount Price (optional):
+						<input
+							type="number"
+							name="discountPrice"
+							min="0"
+							step="0.01"
+							value={formData.discountPrice}
+							onChange={handleFormChange}
+							style={{ border: "1px solid #000", borderRadius: "4px", padding: "6px" }}
+						/>
+					</label>
 					<button type="submit" disabled={submitting} style={{ alignSelf: "flex-start" }}>
 						{submitting ? "Adding..." : "Add Product"}
 					</button>
@@ -275,6 +299,7 @@ export default function AdminProductsPage() {
 										<th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Name</th>
 										<th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Description</th>
 										<th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Price</th>
+										<th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Discount Price</th>
 										<th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Actions</th>
 									</tr>
 								</thead>
@@ -285,6 +310,9 @@ export default function AdminProductsPage() {
 											<td style={{ border: "1px solid #ddd", padding: "8px" }}>{product._product_name}</td>
 											<td style={{ border: "1px solid #ddd", padding: "8px" }}>{product._product_desc}</td>
 											<td style={{ border: "1px solid #ddd", padding: "8px" }}>${product._price.toFixed(2)}</td>
+											<td style={{ border: "1px solid #ddd", padding: "8px" }}>
+												{product._discount_price ? `$${product._discount_price.toFixed(2)}` : "—"}
+											</td>
 											<td style={{ border: "1px solid #ddd", padding: "8px" }}>
 												<button
 													onClick={() => handleRemoveProduct(product._product_id)}
