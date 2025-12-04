@@ -26,7 +26,7 @@ export default function OrdersPage() {
             }
             const users = await usersResponse.json()
             const currentUser = users.find((u: any) => u.email === email)
-            
+
             if (!currentUser) {
                 setLoading(false)
                 return
@@ -66,7 +66,7 @@ export default function OrdersPage() {
     return (
         <div style={{ padding: '20px', color: '#000' }}>
             <h1 style={{ color: '#fff' }}>My Orders</h1>
-            
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <a href="/" style={{ color: '#fff' }}>🏠 Home</a>
             </div>
