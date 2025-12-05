@@ -36,6 +36,10 @@ class UpdateReviewRequest(BaseModel):
     title: Optional[str] = None
     body: Optional[str] = None
 
+
+class ReviewReactionRequest(BaseModel):
+    direction: str
+
 @router.get("/all", response_model=None)
 def get_all_reviews():
     return reviewInteractor.get_all_reviews()
@@ -102,4 +106,22 @@ def update_review(
         detail = str(exc)
         status = 404 if "not found" in detail.lower() else 400
         raise HTTPException(status_code=status, detail=detail)
+
+
+@router.post("/{review_id}/thumbs")
+def react_to_review(review_id: str, request: ReviewReactionRequest):
+    direction = request.direction.lower()
+    if direction not in {"up", "down"}:
+        raise HTTPException(status_code=400, detail="direction must be 'up' or 'down'")
+
+    amount = 1 if direction == "up" else -1
+
+    try:
+        updated_review = reviewInteractor.update_review_likes(int(review_id), amount)
+        return {
+            "review_id": updated_review["review_id"],
+            "likes": updated_review["likes"]
+        }
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
 
