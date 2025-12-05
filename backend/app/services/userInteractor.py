@@ -129,7 +129,7 @@ def get_eligible_gift_recipients(gifter_id: str) -> list[User]:
     eligible_recipients = []
 
     for user in data:
-        if user["user_id"] != gifter_id and user.get("is_admin") == False:
+        if user["user_id"] != gifter_id and not user.get("is_admin", False):
             eligible_recipients.append({
                 "user_id": user["user_id"],
                 "first_name": user["first_name"],
