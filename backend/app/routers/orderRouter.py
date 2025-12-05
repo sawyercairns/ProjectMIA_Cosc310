@@ -3,6 +3,8 @@ from app.services.orderInteractor import load_orders, add_order, get_order_by_id
 from app.schemas.orderClass import Order
 from app.schemas.orderItemClass import OrderItem
 from app.schemas.addressClass import Address
+from app.schemas.orderNotificationClass import OrderNotification
+from app.services.notificationInteractor import create_notification, _get_next_notification_id
 from pydantic import BaseModel
 from typing import List, Optional
 from decimal import Decimal
@@ -107,6 +109,20 @@ def create_order(request: CreateOrderRequest):
         
         result = add_order(user_id=str(request.user_id), order=order)
         
+        # Create order notification for the user
+        total_price = sum(float(item.price) * item.quantity for item in items)
+        item_count = sum(item.quantity for item in items)
+        notification_id = _get_next_notification_id(str(request.user_id))
+        
+        notification = OrderNotification(
+            notification_id=notification_id,
+            user_id=request.user_id,
+            order_id=result["order_id"],
+            total_price=total_price,
+            item_count=item_count
+        )
+        create_notification(str(request.user_id), notification)
+        
         return {
             "message": "Order created successfully",
             "order": result
@@ -162,6 +178,20 @@ def create_gift_order(request: CreateOrderRequest):
         )
         
         result = add_order(user_id=str(recipient_id), order=order)
+        
+        # Create order notification for the gift recipient
+        total_price = sum(float(item.price) * item.quantity for item in items)
+        item_count = sum(item.quantity for item in items)
+        notification_id = _get_next_notification_id(str(recipient_id))
+        
+        notification = OrderNotification(
+            notification_id=notification_id,
+            user_id=recipient_id,
+            order_id=result["order_id"],
+            total_price=total_price,
+            item_count=item_count
+        )
+        create_notification(str(recipient_id), notification)
         
         return {
             "message": "Gift created successfully",
