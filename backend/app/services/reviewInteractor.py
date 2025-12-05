@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import Path
 from typing import Optional
+from datetime import date
 
 from app.schemas.reviewClass import Review
 from app.services.Interactor import create_item, remove_item, load_json, write_to_json
@@ -109,3 +110,34 @@ def update_review_by_id(
     write_to_json("reviews.json", reviews)
 
     return target_review
+
+
+def update_review_likes(review_id: int, amount: int) -> dict:
+    reviews = load_json("reviews.json")
+
+    for review in reviews:
+        if int(review.get("review_id", -1)) == review_id:
+            created_at = review.get("created_at")
+            try:
+                created_at_value = date.fromisoformat(created_at)
+            except (TypeError, ValueError):
+                created_at_value = created_at
+
+            review_obj = Review(
+                review_id=int(review.get("review_id", 0)),
+                user_id=int(review.get("user_id", 0)),
+                product_id=int(review.get("product_id", 0)),
+                created_at=created_at_value,
+                rating=float(review.get("rating", 0)),
+                likes=int(review.get("likes", 0)),
+                title=review.get("title", ""),
+                body=review.get("body", ""),
+            )
+
+            review_obj.update_likes(amount)
+            review["likes"] = review_obj.likes
+
+            write_to_json("reviews.json", reviews)
+            return review
+
+    raise ValueError("Review not found")
