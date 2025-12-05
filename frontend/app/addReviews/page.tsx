@@ -15,6 +15,7 @@ function AddReviewsContent() {
   const [currentUserId, setCurrentUserId] = useState('')
   const [hasPurchased, setHasPurchased] = useState(false)
   const [hasReviewed, setHasReviewed] = useState(false)
+  const [reactingReviewId, setReactingReviewId] = useState<string | null>(null)
 
   useEffect(() => {
     const email = localStorage.getItem('userEmail')
@@ -153,6 +154,42 @@ function AddReviewsContent() {
     }
   }
 
+  const handleThumb = async (reviewId: string, direction: 'up' | 'down') => {
+    if (!userEmail) {
+      alert('Please log in to react to reviews')
+      return
+    }
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      setReactingReviewId(`${reviewId}-${direction}`)
+      const response = await fetch(`${apiUrl}/reviews/${reviewId}/thumbs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ direction })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null)
+        throw new Error(errorData?.detail || 'Failed to update reaction')
+      }
+
+      const result = await response.json()
+      setReviews((prev) =>
+        prev.map((review) =>
+          String(review.review_id) === String(reviewId)
+            ? { ...review, likes: result.likes }
+            : review
+        )
+      )
+    } catch (error) {
+      console.error('Error reacting to review:', error)
+      alert(error instanceof Error ? error.message : 'Error reacting to review')
+    } finally {
+      setReactingReviewId(null)
+    }
+  }
+
   if (loading) {
     return <div style={{ padding: '20px' }}>Loading...</div>
   }
@@ -241,7 +278,23 @@ function AddReviewsContent() {
               <strong>{review.title}</strong> - Rating: {review.rating}/5<br />
               <small>User ID: {review.user_id} | Date: {review.created_at}</small><br />
               <p style={{ marginTop: '10px' }}>{review.body}</p>
-              <small>👍 {review.likes} likes</small>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
+                <button
+                  onClick={() => handleThumb(String(review.review_id), 'up')}
+                  disabled={!userEmail || reactingReviewId === `${review.review_id}-up`}
+                  style={{ padding: '4px 8px', backgroundColor: '#0a0a0a' }}
+                >
+                  👍
+                </button>
+                <button
+                  onClick={() => handleThumb(String(review.review_id), 'down')}
+                  disabled={!userEmail || reactingReviewId === `${review.review_id}-down`}
+                  style={{ padding: '4px 8px', backgroundColor: '#0a0a0a' }}
+                >
+                  👎
+                </button>
+                <small>Likes: {review.likes}</small>
+              </div>
             </li>
           ))}
         </ul>
