@@ -186,13 +186,21 @@ export default function CartPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <a href="/">🏠 Home</a>
                 {items.length > 0 && (
-                    <button
-                        onClick={handlePlaceOrder}
-                        disabled={placingOrder}
-                        className="place-order-btn"
-                    >
-                        {placingOrder ? 'Processing...' : 'Place Order'}
-                    </button>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <button
+                            onClick={handlePlaceOrder}
+                            disabled={placingOrder}
+                            className="place-order-btn"
+                        >
+                            {placingOrder ? 'Processing...' : 'Place Order'}
+                        </button>
+                        <button
+                            disabled={placingOrder}
+                            className="gift-order-btn"
+                        >
+                            Gift to Random User
+                        </button>
+                    </div>
                 )}
             </div>
 
