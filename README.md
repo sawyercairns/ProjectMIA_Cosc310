@@ -11,7 +11,7 @@ Port 5432
 \
 Backend API  
 Port: 8000  
-URL: http://localhost:8000  
+URL: http://localhost:8000/docs  
 \
 Frontend API  
 Port: 3000  
