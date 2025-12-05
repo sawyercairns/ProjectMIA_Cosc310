@@ -5,6 +5,8 @@ import os
 from pathlib import Path
 
 from app.services.Interactor import create_item, remove_item, load_json, write_to_json
+from app.schemas.wishlistDiscountNotificationClass import WishlistDiscountNotification
+from app.services import notificationInteractor
 
 #Adds new_product to end of json file with id incremented
 def create_product(p: Product):
@@ -59,12 +61,60 @@ def swap_price_with_discount(product_id: int):
         if int(product.get("product_id", -1)) == product_id:
             discount_price = product.get("discount_price")
             current_price = product.get("price")
+            product_name = product.get("product_name", "Unknown Product")
+            
             if discount_price is None or discount_price <= 0:
                 raise ValueError("Product does not have a discount price to apply")
+            
+            # Swap prices
             product["price"], product["discount_price"] = discount_price, current_price
             write_to_json("products.json", products)
+            
+            # Send notifications to users who have this item in their wishlist
+            _notify_wishlist_users_of_discount(
+                product_id=product_id,
+                product_name=product_name,
+                old_price=current_price,
+                new_price=discount_price
+            )
             return
     raise ValueError("Product not found")
+
+
+def _notify_wishlist_users_of_discount(product_id: int, product_name: str, old_price: float, new_price: float):
+    """
+    Find all users who have this product in their wishlist and send them a discount notification.
+    """
+    wishlist_path = Path(__file__).resolve().parents[1] / "data" / "wishlist.json"
+    
+    if not os.path.exists(wishlist_path):
+        return
+    
+    try:
+        with open(wishlist_path, "r", encoding="UTF-8") as f:
+            wishlists = json.load(f)
+    except (json.JSONDecodeError, FileNotFoundError):
+        return
+    
+    # Find all users who have this product in their wishlist
+    for user_id, wishlist_data in wishlists.items():
+        entries = wishlist_data.get("entries", [])
+        
+        # Check if this product is in the user's wishlist
+        for entry in entries:
+            if entry.get("product_id") == product_id:
+                # Create and send notification
+                next_id = notificationInteractor._get_next_notification_id(user_id)
+                notification = WishlistDiscountNotification(
+                    notification_id=next_id,
+                    user_id=int(user_id),
+                    product_id=product_id,
+                    product_name=product_name,
+                    old_price=old_price,
+                    new_price=new_price
+                )
+                notificationInteractor.create_notification(user_id, notification)
+                break  # Only one notification per user
 
 
 

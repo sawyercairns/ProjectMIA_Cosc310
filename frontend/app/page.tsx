@@ -253,9 +253,9 @@ export default function Home() {
 
       <h1>Popular Items: </h1>
       <ul>
-        {popularItems.map((pop_item: any) => (
-            <li key={pop_item._product_name}>
-            <strong>{pop_item._product_name}</strong><br />
+        {popularItems.map((pop_item: any, index: number) => (
+            <li key={`popular-${index}-${pop_item[0]}`}>
+            <strong>{pop_item[0]}</strong><br />
               <hr />
             </li>
           ))}

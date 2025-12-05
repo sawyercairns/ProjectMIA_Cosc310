@@ -16,6 +16,21 @@ export default function WishlistPage() {
     }
   }, [])
 
+  // Scroll to specific wishlist item if hash is present in URL (after items load)
+  useEffect(() => {
+    if (!loading && wishlistItems.length > 0) {
+      const hash = window.location.hash
+      if (hash) {
+        setTimeout(() => {
+          const element = document.querySelector(hash)
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        }, 100)
+      }
+    }
+  }, [loading, wishlistItems])
+
   const fetchUserByEmail = async (email: string) => {
     try {
       const response = await fetch(`http://localhost:8000/login/users`)
@@ -198,7 +213,11 @@ export default function WishlistPage() {
           </div>
         ) : (
           wishlistItems.map((item) => (
-            <div key={item.product_id} style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
+            <div 
+              key={item.product_id} 
+              id={`wishlist-${item.product_id}`}
+              style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px' }}
+            >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ marginBottom: '10px' }}>
