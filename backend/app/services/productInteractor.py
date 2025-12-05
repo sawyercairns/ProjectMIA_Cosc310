@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 
-from app.services.Interactor import create_item, remove_item
+from app.services.Interactor import create_item, remove_item, load_json, write_to_json
 
 #Adds new_product to end of json file with id incremented
 def create_product(p: Product):
@@ -51,6 +51,20 @@ def get_products_filtered(category:str = "", keywords:str = "", max_price:float 
             new_product = Product(product["product_id"], product["product_name"], product["product_desc"], product["price"], product["discount_price"], product["discount_percent"], product["rating"], product["rating_count"], product["units_sold"])
             productList.append(new_product)
     return productList
+
+
+def swap_price_with_discount(product_id: int):
+    products = load_json("products.json")
+    for product in products:
+        if int(product.get("product_id", -1)) == product_id:
+            discount_price = product.get("discount_price")
+            current_price = product.get("price")
+            if discount_price is None or discount_price <= 0:
+                raise ValueError("Product does not have a discount price to apply")
+            product["price"], product["discount_price"] = discount_price, current_price
+            write_to_json("products.json", products)
+            return
+    raise ValueError("Product not found")
 
 
 

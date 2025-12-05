@@ -200,6 +200,9 @@ export default function AdminPage() {
                 <button onClick={() => window.location.href = '/admin/featuredItems'}>
                     ⭐ Featured Items
                 </button>
+                <button onClick={() => window.location.href = '/admin/products'} style={{ marginLeft: '10px' }}>
+                    🛒 Products
+                </button>
             </div>
 
             {activeTab === 'users' && (
