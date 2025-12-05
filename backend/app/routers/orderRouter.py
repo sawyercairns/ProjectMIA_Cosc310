@@ -131,7 +131,7 @@ def create_order(request: CreateOrderRequest):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-@router.post("gift", response_model=dict)
+@router.post("/gift", response_model=dict)
 def create_gift_order(request: CreateOrderRequest):
     """
     Create a new gift order for random user.

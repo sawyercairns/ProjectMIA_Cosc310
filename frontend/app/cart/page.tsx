@@ -86,11 +86,11 @@ export default function CartPage() {
         }
     }
 
-    const handlePlaceOrder = async () => {
+    const handlePlaceOrder = async (isGift: boolean = false) => {
         if (!userId || !cart || cart.cart_items.length == 0) return
 
-        // validate address
-        if (!address.line1 || !address.city || !address.province || !address.country) {
+        // validate address (only for regular orders)
+        if (!isGift && (!address.line1 || !address.city || !address.province || !address.country)) {
             alert('Please fill in all required address fields (Address Line 1, City, Province, Country)')
             return
         }
@@ -124,10 +124,11 @@ export default function CartPage() {
             const orderRequest = {
                 user_id: userId,
                 order_items: orderItems,
-                address: address
+                address: isGift ? null : address
             }
 
-            const orderResponse = await fetch('http://localhost:8000/orders', {
+            const endpoint = isGift ? 'http://localhost:8000/orders/gift' : 'http://localhost:8000/orders'
+            const orderResponse = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -143,18 +144,18 @@ export default function CartPage() {
                     })
                 }
                 
-                alert('Order Placed')
+                alert(isGift ? 'Gift sent to a random user!' : 'Order Placed')
                 const userEmail = localStorage.getItem('userEmail')
                 if (userEmail) {
                     fetchCart(userEmail)
                 }
             } else {
                 const errorData = await orderResponse.text()
-                alert(`Failed to place order: ${errorData}`)
+                alert(`Failed to place ${isGift ? 'gift' : 'order'}: ${errorData}`)
             }
         } catch (error) {
-            console.error('Error placing order:', error)
-            alert('Error placing order. Please try again.')
+            console.error(`Error placing ${isGift ? 'gift' : 'order'}:`, error)
+            alert(`Error placing ${isGift ? 'gift' : 'order'}. Please try again.`)
         } finally {
             setPlacingOrder(false)
         }
@@ -186,13 +187,22 @@ export default function CartPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <a href="/">🏠 Home</a>
                 {items.length > 0 && (
-                    <button
-                        onClick={handlePlaceOrder}
-                        disabled={placingOrder}
-                        className="place-order-btn"
-                    >
-                        {placingOrder ? 'Processing...' : 'Place Order'}
-                    </button>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <button
+                            onClick={() => handlePlaceOrder(false)}
+                            disabled={placingOrder}
+                            className="place-order-btn"
+                        >
+                            {placingOrder ? 'Processing...' : 'Place Order'}
+                        </button>
+                        <button
+                            onClick={() => handlePlaceOrder(true)}
+                            disabled={placingOrder}
+                            className="gift-order-btn"
+                        >
+                            Gift to Random User
+                        </button>
+                    </div>
                 )}
             </div>
 
