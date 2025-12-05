@@ -11,6 +11,7 @@ export default function LoginButton() {
   const [showDropdown, setShowDropdown] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
+  const [userId, setUserId] = useState<number | null>(null)
 
   useEffect(() => {
     setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true')
@@ -23,6 +24,13 @@ export default function LoginButton() {
     }
   }, [])
 
+  // Refetch notification count when dropdown is opened
+  useEffect(() => {
+    if (showDropdown && userId) {
+      fetchNotificationCount(userId)
+    }
+  }, [showDropdown, userId])
+
   const fetchUserAdmin = async (email: string) => {
     try {
       const response = await fetch(`http://localhost:8000/login/users`)
@@ -31,6 +39,7 @@ export default function LoginButton() {
         const currentUser = users.find((u: any) => u.email === email)
         if (currentUser) {
           setIsAdmin(currentUser.is_admin || false)
+          setUserId(currentUser.user_id)
           fetchNotificationCount(currentUser.user_id)
         }
       }

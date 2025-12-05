@@ -1,5 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from app.services.wishListInteractor import load_wishList, add_entry, remove_entry
+from app.services.notificationInteractor import create_notification, _get_next_notification_id
+from app.services.productInteractor import get_product
+from app.schemas.wishlistAddedNotificationClass import WishlistAddedNotification
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/wishlist", tags=["WishList"])
@@ -23,6 +26,20 @@ class AddWishRequest(BaseModel):
 def add_wish_item(request: AddWishRequest):
     try:
         wishlist = add_entry(request.user_id, request.product_id)
+        
+        # Create notification for wishlist item added
+        product = get_product(request.product_id)
+        if product:
+            notification_id = _get_next_notification_id(request.user_id)
+            notification = WishlistAddedNotification(
+                notification_id=notification_id,
+                user_id=int(request.user_id),
+                product_id=request.product_id,
+                product_name=product.get("product_name", "Unknown Product"),
+                price=product.get("actual_price", 0.0)
+            )
+            create_notification(request.user_id, notification)
+        
         return wishlist
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

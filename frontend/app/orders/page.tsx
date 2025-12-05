@@ -17,6 +17,22 @@ export default function OrdersPage() {
         }
     }, [])
 
+    // Scroll to specific order if hash is present in URL (after orders load)
+    useEffect(() => {
+        if (!loading && orders.length > 0) {
+            const hash = window.location.hash
+            if (hash) {
+                // Small delay to ensure DOM is rendered
+                setTimeout(() => {
+                    const element = document.querySelector(hash)
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }
+                }, 100)
+            }
+        }
+    }, [loading, orders])
+
     const fetchOrders = async (email: string) => {
         try {
             // First get user to find user_id
@@ -122,13 +138,17 @@ export default function OrdersPage() {
 
                     <div style={{ marginTop: '20px' }}>
                         {orders.map((order: any) => (
-                            <div key={order.order_id} style={{ 
-                                border: '1px solid #ddd', 
-                                padding: '20px', 
-                                marginBottom: '20px',
-                                borderRadius: '8px',
-                                backgroundColor: '#f9f9f9'
-                            }}>
+                            <div 
+                                key={order.order_id} 
+                                id={`order-${order.order_id}`}
+                                style={{ 
+                                    border: '1px solid #ddd', 
+                                    padding: '20px', 
+                                    marginBottom: '20px',
+                                    borderRadius: '8px',
+                                    backgroundColor: '#f9f9f9'
+                                }}
+                            >
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
                                     <div>
                                         <h3 style={{ margin: '0 0 10px 0', color: '#000' }}>Order #{order.order_id}</h3>

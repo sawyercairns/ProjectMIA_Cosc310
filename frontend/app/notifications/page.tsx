@@ -9,6 +9,7 @@ interface Notification {
   order_id?: number
   total_price?: number
   item_count?: number
+  product_id?: number
   product_name?: string
   old_price?: number
   new_price?: number
@@ -81,10 +82,16 @@ export default function NotificationsPage() {
   }
 
   const dismissAll = async () => {
-    // Dismiss all notifications one by one
     for (const notification of notifications) {
-      await dismissNotification(notification.notification_id)
+      try {
+        await fetch(`http://localhost:8000/notifications/${user.user_id}/${notification.notification_id}`, {
+          method: 'DELETE'
+        })
+      } catch (error) {
+        console.error("Error dismissing notification:", error)
+      }
     }
+    setNotifications([])
   }
 
   const getNotificationIcon = (type: string) => {
@@ -93,6 +100,8 @@ export default function NotificationsPage() {
         return '📦'
       case 'wishlist_discount':
         return '💰'
+      case 'wishlist_added':
+        return '⭐'
       default:
         return '🔔'
     }
@@ -104,6 +113,8 @@ export default function NotificationsPage() {
         return { borderLeft: '4px solid #4CAF50' }
       case 'wishlist_discount':
         return { borderLeft: '4px solid #FF9800' }
+      case 'wishlist_added':
+        return { borderLeft: '4px solid #9C27B0' }
       default:
         return { borderLeft: '4px solid #2196F3' }
     }
@@ -204,10 +215,30 @@ export default function NotificationsPage() {
                   {notification.notification_type === 'order_complete' && notification.order_id && (
                     <div style={{ marginTop: '10px' }}>
                       <a 
-                        href="/orders"
+                        href={`/orders#order-${notification.order_id}`}
                         style={{ color: '#1976D2', textDecoration: 'underline' }}
                       >
                         View Order #{notification.order_id}
+                      </a>
+                    </div>
+                  )}
+                  {notification.notification_type === 'wishlist_added' && (
+                    <div style={{ marginTop: '10px' }}>
+                      <a 
+                        href={`/wishlist#wishlist-${notification.product_id}`}
+                        style={{ color: '#9C27B0', textDecoration: 'underline' }}
+                      >
+                        View in Wishlist
+                      </a>
+                    </div>
+                  )}
+                  {notification.notification_type === 'wishlist_discount' && (
+                    <div style={{ marginTop: '10px' }}>
+                      <a 
+                        href={`/wishlist#wishlist-${notification.product_id}`}
+                        style={{ color: '#FF9800', textDecoration: 'underline' }}
+                      >
+                        View in Wishlist
                       </a>
                     </div>
                   )}
